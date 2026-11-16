@@ -1,0 +1,48 @@
+/*
+ * Halo Health brand tokens (PLACEHOLDERS).
+ *
+ * These mirror the semantic token names used by the platform app
+ * (wanio/halo-health → apps/product/src/styles/global.css) so the two can
+ * later share a single source of truth (e.g. a published @halo/tokens package).
+ *
+ * Rules:
+ *  - Components use semantic tokens only (bg-primary, text-muted-foreground…),
+ *    never raw hex values.
+ *  - Change brand values HERE, not in components.
+ *  - Keep names aligned with the platform. Add new tokens in both places.
+ */
+:root {
+  /* Surfaces */
+  --background: #f5f7f2;
+  --foreground: #18362c;
+  --card: #ffffff;
+  --card-foreground: #18362c;
+  --popover: #ffffff;
+  --popover-foreground: #18362c;
+
+  /* Brand */
+  --primary: #245641;
+  --primary-foreground: #ffffff;
+  --secondary: #e7eee6;
+  --secondary-foreground: #18362c;
+  --accent: #b0cbbb;
+  --accent-foreground: #18362c;
+
+  /* Neutrals and states */
+  --muted: #e7eee6;
+  --muted-foreground: #4f6359;
+  --border: #d6e1d8;
+  --input: #d6e1d8;
+  --ring: #245641;
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+
+  /* Shape */
+  --radius: 0.75rem;
+
+  /* Motion (shared by CSS, Motion and GSAP) */
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
