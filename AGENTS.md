@@ -50,17 +50,44 @@ pnpm format       # fix formatting
 - Named exports, except Next.js route files (`page.tsx`, `layout.tsx`…).
 - Import with the `@/` alias.
 
-**Styling**
+**Design system**
 
-- Tailwind utilities only. No CSS modules, no inline hex colours.
-- Use semantic tokens (`bg-primary`, `text-muted-foreground`, `border-border`,
-  `rounded-lg`). Brand values change only in `src/styles/tokens.css`.
-- Token names must stay aligned with the platform app
-  (`apps/product/src/styles/global.css` in `wanio/halo-health`).
-- Mobile first. Check at 375px wide.
+- Tokens live in `src/styles/tokens.css` in three layers: palette (`--hh-*`),
+  semantic (`--background`, `--primary`…) and themes. Tailwind maps them in
+  `src/app/globals.css`.
+- Components use semantic classes (`bg-background`, `text-muted-foreground`,
+  `text-accent`, `border-border`). Palette classes (`bg-ink`, `text-gold`,
+  `bg-ember`…) are for brand art only: gradients, glows, illustrations.
+- Dark sections: add `theme-ink` to the section. It flips the semantic tokens,
+  so the same components work on dark without `dark:` variants.
+- Type: `text-display-2xl|xl|lg|md` (serif display), `text-lead`,
+  `text-eyebrow`. Body is Inter. Do not set font sizes for headings by hand.
+- Layout: `container-page` for width and gutters, `section-y` for vertical
+  rhythm.
+- Brand art utilities: `halo-ring` (+ `animate-halo-spin`, size with width,
+  thickness with `[--halo-thickness:2px]`), `bg-gradient-dawn`,
+  `text-gradient-warm`, `grain`, `link-underline`.
+- Fonts are self-hosted in `src/fonts`. The style guide's display font is
+  The Seasons (commercial); Cormorant Garamond stands in until licensed files
+  are added in `src/app/layout.tsx`.
+- Logo: `<Logo />` (`src/components/brand/logo.tsx`), a mask of
+  `public/brand/halo-health-logo.svg` that takes the current text colour.
+- Tailwind utilities only. No CSS modules, no inline hex colours in components.
+- Mobile first. Check at 375px wide. No horizontal scroll.
+
+**Content**
+
+- Homepage copy lives in `src/content/home.ts`, not in components.
+- Copy rules from the product specification: no statistics, partner names,
+  approvals or testimonials unless confirmed; no age-reversal, detox or
+  body-image claims; no pressure patterns; programme names are working names.
 
 **Animation**
 
+- Shared primitives in `src/components/motion/`: `Reveal` (fade and rise on
+  scroll), `SplitWords` (headline word reveal), `Magnetic` (button pull),
+  `Spotlight` (pointer-following light on cards). Use these before writing new
+  animation code.
 - Pick one tool per element:
   - **Motion** for component-level enter/exit, hover, layout and gesture
     animation. Import from `motion/react`.
@@ -76,9 +103,9 @@ pnpm format       # fix formatting
 
 - `useState` for trivial local state.
 - XState for anything with more than two states or rules between them
-  (multi-step CTAs, quizzes, pricing toggles, modals with flows). Define
-  machines in `src/machines/` with `setup({ types })`, consume with
-  `useMachine`. See `audience-machine.ts`.
+  (multi-step CTAs, quizzes, filters, menus). Define machines in
+  `src/machines/` with `setup({ types })`, consume with `useMachine`. See
+  `programme-filter-machine.ts`.
 
 **Numbers**
 
@@ -93,8 +120,8 @@ pnpm format       # fix formatting
 
 **Copy**
 
-- All copy on the starter page is placeholder. Do not invent health or
-  financial claims; marketing claims need approval.
+- Homepage copy is a draft based on the product specification. Do not invent
+  health or financial claims; marketing claims need approval.
 
 ## Git
 

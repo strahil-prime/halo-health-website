@@ -63,12 +63,17 @@ this site is secret.
 src/
   app/                 routes (App Router), layout, globals.css
   components/
+    brand/             logo
+    site/              header, footer
+    home/              homepage sections
+    motion/            shared animation primitives (Reveal, SplitWords…)
     ui/                shadcn/ui components (owned code, edit freely)
     magicui/           Magic UI components (owned code, edit freely)
-    home/              sections for the home page
+  content/home.ts      all homepage copy
   machines/            XState machines
-  lib/                 utils (cn), env + platformLink()
-  styles/tokens.css    brand design tokens (placeholders)
+  lib/                 utils (cn), env + platformLink() + contactLink()
+  fonts/               self-hosted fonts (OFL)
+  styles/tokens.css    design tokens
 ```
 
 ## Adding components
@@ -81,9 +86,18 @@ pnpm dlx shadcn@latest add @magicui/marquee        # Magic UI (registry in compo
 Components land in `src/components/ui` or `src/components/magicui`. Check that
 new components use the semantic tokens (`bg-primary`, not hex values).
 
-## Design tokens
+## Design system
 
-Brand values live in `src/styles/tokens.css` and are mapped into Tailwind in
-`src/app/globals.css`. The token names match the platform app so they can later
-move into one shared package. Today they are placeholders copied from the
-platform's current palette.
+Tokens live in `src/styles/tokens.css` and are mapped into Tailwind in
+`src/app/globals.css`. They grew out of the brand style guide (black, white,
+NUDE `#E7D7C9`) into a warm, high-contrast palette with "halo" gradients.
+Semantic token names match the platform app so the two can later share one
+package. See `AGENTS.md` for how to use them.
+
+Two things still need brand assets:
+
+- **Display font.** The style guide specifies The Seasons, which needs a web
+  licence. Cormorant Garamond stands in. To switch, add the licensed `.woff2`
+  files to `src/fonts` and point `seasons` in `src/app/layout.tsx` at them.
+- **Logo.** `public/brand/halo-health-logo.svg` was traced from the style guide
+  PDF. Replace it with the original vector file when available.

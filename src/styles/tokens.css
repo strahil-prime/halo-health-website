@@ -1,48 +1,117 @@
 /*
- * Halo Health brand tokens (PLACEHOLDERS).
+ * Halo Health design tokens.
  *
- * These mirror the semantic token names used by the platform app
- * (wanio/halo-health → apps/product/src/styles/global.css) so the two can
- * later share a single source of truth (e.g. a published @halo/tokens package).
+ * Evolved from the brand style guide (logo black/white, NUDE #E7D7C9,
+ * The Seasons + Inter) into a full system with strong contrast and warm
+ * "halo" gradients.
  *
- * Rules:
- *  - Components use semantic tokens only (bg-primary, text-muted-foreground…),
- *    never raw hex values.
- *  - Change brand values HERE, not in components.
- *  - Keep names aligned with the platform. Add new tokens in both places.
+ * Three layers:
+ *  1. Palette    raw brand colours. Never use these names in components
+ *                unless you are drawing brand art (gradients, glows).
+ *  2. Semantic   what components use (bg-background, text-muted-foreground…).
+ *                Names match the platform app so tokens can be shared later.
+ *  3. Themes     `.theme-ink` flips the semantic layer for dark sections.
+ *
+ * Contrast (WCAG): ink on bone 17.6:1, muted-foreground on bone 7.4:1,
+ * clay on bone 6.3:1, bone on ink 17.6:1, gold on ink 10.4:1.
  */
 :root {
-  /* Surfaces */
-  --background: #f5f7f2;
-  --foreground: #18362c;
+  /* 1. Palette */
+  --hh-ink: #14100d;
+  --hh-ink-2: #1f1915;
+  --hh-ink-3: #2c241e;
+  --hh-bone: #fbf7f2;
+  --hh-sand: #f3eae1;
+  --hh-nude: #e7d7c9; /* style guide NUDE */
+  --hh-nude-deep: #d6bfab;
+  --hh-taupe: #5c5047;
+  --hh-clay: #8a4b2d;
+  --hh-ember: #d98a5b;
+  --hh-gold: #ecc497;
+  --hh-glow: #fbe6cc;
+
+  /* Gradients */
+  --gradient-halo: conic-gradient(
+    from var(--halo-angle, 0deg),
+    transparent 0deg,
+    var(--hh-gold) 60deg,
+    var(--hh-glow) 110deg,
+    var(--hh-ember) 170deg,
+    transparent 250deg,
+    transparent 360deg
+  );
+  --gradient-dawn: linear-gradient(
+    135deg,
+    var(--hh-glow) 0%,
+    var(--hh-nude) 45%,
+    var(--hh-ember) 130%
+  );
+  --gradient-dusk: linear-gradient(
+    160deg,
+    var(--hh-ink-3) 0%,
+    var(--hh-ink) 60%
+  );
+  --gradient-text-warm: linear-gradient(
+    100deg,
+    var(--hh-glow) 0%,
+    var(--hh-gold) 45%,
+    var(--hh-ember) 100%
+  );
+
+  /* 2. Semantic (light theme) */
+  --background: var(--hh-bone);
+  --foreground: var(--hh-ink);
   --card: #ffffff;
-  --card-foreground: #18362c;
+  --card-foreground: var(--hh-ink);
   --popover: #ffffff;
-  --popover-foreground: #18362c;
-
-  /* Brand */
-  --primary: #245641;
-  --primary-foreground: #ffffff;
-  --secondary: #e7eee6;
-  --secondary-foreground: #18362c;
-  --accent: #b0cbbb;
-  --accent-foreground: #18362c;
-
-  /* Neutrals and states */
-  --muted: #e7eee6;
-  --muted-foreground: #4f6359;
-  --border: #d6e1d8;
-  --input: #d6e1d8;
-  --ring: #245641;
+  --popover-foreground: var(--hh-ink);
+  --primary: var(--hh-ink);
+  --primary-foreground: var(--hh-bone);
+  --secondary: var(--hh-nude);
+  --secondary-foreground: var(--hh-ink);
+  --accent: var(--hh-clay);
+  --accent-foreground: var(--hh-bone);
+  --muted: var(--hh-sand);
+  --muted-foreground: var(--hh-taupe);
+  --border: #e4d8cc;
+  --input: #e4d8cc;
+  --ring: var(--hh-clay);
   --destructive: #b42318;
   --destructive-foreground: #ffffff;
 
   /* Shape */
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 
   /* Motion (shared by CSS, Motion and GSAP) */
-  --duration-fast: 150ms;
-  --duration-base: 300ms;
-  --duration-slow: 600ms;
+  --duration-fast: 180ms;
+  --duration-base: 360ms;
+  --duration-slow: 800ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --header-height: 4.5rem;
+  --page-gutter: clamp(1.25rem, 4vw, 3rem);
+  --page-max: 82rem;
+}
+
+/* 3. Dark theme for a section: <section class="theme-ink"> */
+.theme-ink {
+  --background: var(--hh-ink);
+  --foreground: var(--hh-bone);
+  --card: var(--hh-ink-2);
+  --card-foreground: var(--hh-bone);
+  --primary: var(--hh-bone);
+  --primary-foreground: var(--hh-ink);
+  --secondary: var(--hh-ink-3);
+  --secondary-foreground: var(--hh-bone);
+  --accent: var(--hh-gold);
+  --accent-foreground: var(--hh-ink);
+  --muted: var(--hh-ink-2);
+  --muted-foreground: #c9bbae;
+  --border: rgb(251 247 242 / 0.14);
+  --input: rgb(251 247 242 / 0.14);
+  --ring: var(--hh-gold);
+  color: var(--foreground);
+  background-color: var(--background);
 }
