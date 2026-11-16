@@ -52,10 +52,11 @@ every push to `main` and every pull request.
 See `.env.example`. Only `NEXT_PUBLIC_*` values are used, because nothing on
 this site is secret.
 
-| Variable                   | Purpose                                        |
-| -------------------------- | ---------------------------------------------- |
-| `NEXT_PUBLIC_PLATFORM_URL` | Base URL of the platform app that CTAs link to |
-| `NEXT_PUBLIC_SITE_URL`     | Canonical URL of this site (metadata, OG tags) |
+| Variable                    | Purpose                                        |
+| --------------------------- | ---------------------------------------------- |
+| `NEXT_PUBLIC_PLATFORM_URL`  | Base URL of the platform app that CTAs link to |
+| `NEXT_PUBLIC_SITE_URL`      | Canonical URL of this site (metadata, OG tags) |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Address behind the "Talk to our team" links    |
 
 ## Project layout
 
@@ -63,12 +64,18 @@ this site is secret.
 src/
   app/                 routes (App Router), layout, globals.css
   components/
+    brand/             logo, pill buttons, headline parts
+    site/              notice bar, header, footer
+    home/              homepage sections
+    motion/            shared animation primitives (Reveal, RevealLines…)
     ui/                shadcn/ui components (owned code, edit freely)
     magicui/           Magic UI components (owned code, edit freely)
-    home/              sections for the home page
+  assets/home/         homepage photography (static imports)
+  content/home.ts      all homepage copy
   machines/            XState machines
-  lib/                 utils (cn), env + platformLink()
-  styles/tokens.css    brand design tokens (placeholders)
+  lib/                 utils (cn), env + platformLink() + contactLink()
+  fonts/               self-hosted fonts (OFL)
+  styles/tokens.css    design tokens
 ```
 
 ## Adding components
@@ -81,9 +88,26 @@ pnpm dlx shadcn@latest add @magicui/marquee        # Magic UI (registry in compo
 Components land in `src/components/ui` or `src/components/magicui`. Check that
 new components use the semantic tokens (`bg-primary`, not hex values).
 
-## Design tokens
+## Design system
 
-Brand values live in `src/styles/tokens.css` and are mapped into Tailwind in
-`src/app/globals.css`. The token names match the platform app so they can later
-move into one shared package. Today they are placeholders copied from the
-platform's current palette.
+Tokens live in `src/styles/tokens.css` and are mapped into Tailwind in
+`src/app/globals.css`. They grew out of the brand style guide (black, white,
+NUDE `#E7D7C9`) into a warm editorial palette: ivory ground, noir bands, nude
+accents and photography on rounded cards. Semantic token names match the
+platform app so the two can later share one package. See `AGENTS.md` for how
+to use them.
+
+Before the public launch:
+
+- **Search engines.** `src/app/layout.tsx` sets `robots: noindex` for the soft
+  launch. Remove it when the site should be found.
+- **Photography.** The images in `src/assets/home` are generated stand-ins.
+  Replace them with licensed or commissioned photography (same file names).
+
+Two things still need brand assets:
+
+- **Display font.** The style guide specifies The Seasons, which needs a web
+  licence. Cormorant Garamond stands in. To switch, add the licensed `.woff2`
+  files to `src/fonts` and point `seasons` in `src/app/layout.tsx` at them.
+- **Logo.** `public/brand/halo-health-logo.svg` was traced from the style guide
+  PDF. Replace it with the original vector file when available.

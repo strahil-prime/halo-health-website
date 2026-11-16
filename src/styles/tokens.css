@@ -1,48 +1,109 @@
 /*
- * Halo Health brand tokens (PLACEHOLDERS).
+ * Halo Health design tokens.
  *
- * These mirror the semantic token names used by the platform app
- * (wanio/halo-health → apps/product/src/styles/global.css) so the two can
- * later share a single source of truth (e.g. a published @halo/tokens package).
+ * From the brand style guide (logo black/white, NUDE #E7D7C9, The Seasons +
+ * Inter) and the approved homepage design: a near-monochrome system where
+ * the warmth comes from photography.
  *
- * Rules:
- *  - Components use semantic tokens only (bg-primary, text-muted-foreground…),
- *    never raw hex values.
- *  - Change brand values HERE, not in components.
- *  - Keep names aligned with the platform. Add new tokens in both places.
+ * Three layers:
+ *  1. Palette    raw brand colours. Never use these names in components
+ *                unless you are drawing brand art (photo scrims, glass).
+ *  2. Semantic   what components use (bg-background, text-muted-foreground…).
+ *                Names match the platform app so tokens can be shared later.
+ *  3. Themes     `.theme-ink` and `.theme-nude` flip the semantic layer for
+ *                a section or a card.
+ *
+ * Contrast (WCAG): ink on ivory 17:1, taupe on ivory 6.6:1, cream on noir
+ * 16:1, mist on noir 8.7:1, taupe-deep on nude 6.9:1.
  */
 :root {
-  /* Surfaces */
-  --background: #f5f7f2;
-  --foreground: #18362c;
-  --card: #ffffff;
-  --card-foreground: #18362c;
-  --popover: #ffffff;
-  --popover-foreground: #18362c;
+  /* 1. Palette */
+  --hh-noir: #0a0908;
+  --hh-ink: #0e0c0a;
+  --hh-ink-2: #15110e;
+  --hh-ink-3: #241d18;
+  --hh-ivory: #f6f0e9;
+  --hh-sand: #ede2d5;
+  --hh-nude: #e7d7c9; /* style guide NUDE */
+  --hh-cream: #f1e7db;
+  --hh-linen: #e4d8ca;
+  --hh-mist: #b9ab9d;
+  --hh-stone: #85786c;
+  --hh-taupe: #5e544b;
+  --hh-taupe-deep: #4a4038;
+  --hh-umber: #3b332c;
+  --hh-bronze: #9a7650;
 
-  /* Brand */
-  --primary: #245641;
-  --primary-foreground: #ffffff;
-  --secondary: #e7eee6;
-  --secondary-foreground: #18362c;
-  --accent: #b0cbbb;
-  --accent-foreground: #18362c;
-
-  /* Neutrals and states */
-  --muted: #e7eee6;
-  --muted-foreground: #4f6359;
-  --border: #d6e1d8;
-  --input: #d6e1d8;
-  --ring: #245641;
+  /* 2. Semantic (light theme) */
+  --background: var(--hh-ivory);
+  --foreground: var(--hh-ink);
+  --card: var(--hh-sand);
+  --card-foreground: var(--hh-ink);
+  --popover: var(--hh-ivory);
+  --popover-foreground: var(--hh-ink);
+  --primary: var(--hh-ink);
+  --primary-foreground: var(--hh-cream);
+  --secondary: var(--hh-nude);
+  --secondary-foreground: var(--hh-ink);
+  --accent: var(--hh-bronze);
+  --accent-foreground: var(--hh-ink);
+  --muted: var(--hh-sand);
+  --muted-foreground: var(--hh-taupe);
+  --border: rgb(14 12 10 / 0.14);
+  --input: rgb(14 12 10 / 0.14);
+  --ring: var(--hh-ink);
   --destructive: #b42318;
   --destructive-foreground: #ffffff;
 
   /* Shape */
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 
   /* Motion (shared by CSS, Motion and GSAP) */
-  --duration-fast: 150ms;
-  --duration-base: 300ms;
-  --duration-slow: 600ms;
+  --duration-fast: 180ms;
+  --duration-base: 360ms;
+  --duration-slow: 800ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Layout */
+  --header-height: 5.5rem;
+  --page-gutter: clamp(1.25rem, 2.8vw, 2.5rem);
+  --page-max: 90rem;
+  /* Inset "cards" (hero, dark bands) sit this far from the viewport edge. */
+  --inset-gutter: clamp(0.5rem, 0.85vw, 0.75rem);
+}
+
+/* 3a. Dark theme: <section class="theme-ink">, photo cards, footer. */
+.theme-ink {
+  --background: var(--hh-noir);
+  --foreground: var(--hh-cream);
+  --card: var(--hh-ink-2);
+  --card-foreground: var(--hh-cream);
+  --primary: var(--hh-cream);
+  --primary-foreground: var(--hh-ink);
+  --secondary: var(--hh-ink-3);
+  --secondary-foreground: var(--hh-cream);
+  --accent: var(--hh-linen);
+  --accent-foreground: var(--hh-ink);
+  --muted: var(--hh-ink-2);
+  --muted-foreground: var(--hh-mist);
+  --border: rgb(241 231 219 / 0.18);
+  --input: rgb(241 231 219 / 0.18);
+  --ring: var(--hh-cream);
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* 3b. Brand nude: bands and open accordion panels. */
+.theme-nude {
+  --background: var(--hh-nude);
+  --foreground: var(--hh-ink);
+  --card: var(--hh-ivory);
+  --card-foreground: var(--hh-ink);
+  --muted: var(--hh-sand);
+  --muted-foreground: var(--hh-taupe-deep);
+  --border: rgb(14 12 10 / 0.3);
+  --input: rgb(14 12 10 / 0.3);
+  color: var(--foreground);
+  background-color: var(--background);
 }

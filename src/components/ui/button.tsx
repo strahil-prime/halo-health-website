@@ -3,24 +3,26 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
-// shadcn/ui Button (new-york), using Halo Health semantic tokens.
+// shadcn/ui Button (new-york), restyled for Halo Health.
+// Colours are semantic, so the same variants work inside `.theme-ink`.
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button relative inline-flex shrink-0 items-center justify-center gap-2 rounded-full text-sm font-semibold whitespace-nowrap transition-[background-color,color,border-color,box-shadow,transform] duration-300 ease-brand active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        default:
+          'bg-primary text-primary-foreground hover:shadow-[0_10px_40px_-10px_var(--hh-ember)]',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         outline:
-          'border border-border bg-card text-primary shadow-xs hover:bg-muted',
-        ghost: 'text-primary hover:bg-muted',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'border border-foreground/25 text-foreground hover:border-foreground hover:bg-foreground hover:text-background',
+        ghost: 'text-foreground hover:bg-foreground/8',
+        link: 'rounded-none link-underline text-foreground',
       },
       size: {
-        default: 'min-h-11 px-4 py-2',
-        sm: 'min-h-9 px-3',
-        lg: 'min-h-12 px-6 text-base',
+        default: 'min-h-11 px-5 py-2',
+        sm: 'min-h-10 px-4',
+        lg: 'min-h-14 px-7 text-base',
         icon: 'size-11',
       },
     },
