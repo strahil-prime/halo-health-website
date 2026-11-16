@@ -1,179 +1,219 @@
 'use client';
 
+import NumberFlow from '@number-flow/react';
 import { useMachine } from '@xstate/react';
 import { ArrowUpRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { SectionHeading } from '@/components/home/section-heading';
-import { Reveal } from '@/components/motion/reveal';
-import { Spotlight } from '@/components/motion/spotlight';
-import { Button } from '@/components/ui/button';
-import {
-  programmeFilters,
-  programmes,
-  type ProgrammeCategory,
-} from '@/content/home';
+import Image from 'next/image';
+import { photos } from '@/assets/home';
+import { Eyebrow } from '@/components/brand/headline';
+import { DisclosurePanel, PlusMinus } from '@/components/home/disclosure';
+import { Reveal, RevealLines } from '@/components/motion/reveal';
+import { programmes } from '@/content/home';
 import { platformLink } from '@/lib/env';
 import { cn } from '@/lib/utils';
-import { programmeFilterMachine } from '@/machines/programme-filter-machine';
+import { accordionMachine } from '@/machines/accordion-machine';
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const items = programmes.items;
 
-/** Card art: one gradient per category, each with its own halo. */
-const art: Record<ProgrammeCategory, string> = {
-  assess:
-    'bg-[radial-gradient(120%_120%_at_0%_0%,var(--hh-glow),var(--hh-nude)_45%,var(--hh-ember)_120%)]',
-  body: 'bg-[radial-gradient(120%_120%_at_100%_0%,var(--hh-gold),var(--hh-ember)_55%,var(--hh-clay)_120%)]',
-  mind: 'bg-[radial-gradient(120%_120%_at_50%_110%,var(--hh-nude),var(--hh-nude-deep)_50%,var(--hh-taupe)_140%)]',
-  living:
-    'bg-[radial-gradient(120%_120%_at_0%_100%,var(--hh-ink-3),var(--hh-ink)_60%)]',
-};
-
-const categoryLabel: Record<ProgrammeCategory, string> = {
-  assess: 'Assess',
-  body: 'Body',
-  mind: 'Mind',
-  living: 'Longevity living',
-};
-
+/**
+ * Programmes: an accordion on the right drives the photograph, the counter
+ * and the progress marks on the left.
+ */
 export function Programmes() {
-  const [snapshot, send] = useMachine(programmeFilterMachine);
-  const { filter } = snapshot.context;
-  const visible = programmes.filter(
-    (p) => filter === 'all' || p.category === filter,
-  );
+  const [first] = items;
+  const [snapshot, send] = useMachine(accordionMachine, {
+    input: { openId: first.id, collapsible: false },
+  });
+  const current =
+    items.find((item) => item.id === snapshot.context.openId) ?? first;
+  const index = items.indexOf(current);
 
   return (
     <section
       id="programmes"
-      aria-labelledby="programmes-heading"
-      className="bg-muted section-y"
+      aria-labelledby="programmes-title"
+      className="container-page section-t"
     >
-      <div className="container-page">
-        <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
-          <SectionHeading
-            id="programmes-heading"
-            eyebrow="Programmes"
-            title="Programmes that meet you where you are."
-            body="Your assessment and your physician point to what matters most for you. These are the programmes your plan can draw on."
+      <div className="mb-10 flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
+        <div className="flex flex-[2_1_32.5rem] flex-col gap-5">
+          <Eyebrow index="02">{programmes.eyebrow}</Eyebrow>
+          <h2 id="programmes-title" className="text-display-xl">
+            <RevealLines lines={programmes.titleLines} />
+          </h2>
+        </div>
+        <Reveal delay={0.15} className="max-w-[23.75rem] flex-[1_1_18.75rem]">
+          <p className="text-muted-foreground">{programmes.body}</p>
+        </Reveal>
+      </div>
+
+      <div className="flex flex-wrap items-stretch gap-4">
+        <Reveal className="theme-ink relative isolate flex min-h-[27rem] flex-[1_1_27.5rem] flex-col justify-between overflow-hidden rounded-3xl p-5 sm:min-h-[32rem] lg:min-h-[36.25rem] lg:px-7 lg:pt-[1.625rem] lg:pb-6">
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={current.id}
+              className="absolute inset-0 -z-20"
+              initial={{ opacity: 0, scale: 1.08 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.1, ease }}
+            >
+              <Image
+                src={photos[current.image]}
+                alt={current.imageAlt}
+                fill
+                placeholder="blur"
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover object-[40%_30%]"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 -z-10 h-[32%] bg-linear-to-b from-noir/65 to-transparent"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 bottom-0 -z-10 h-[48%] bg-linear-to-t from-noir/90 to-transparent"
           />
 
-          <Reveal
-            delay={0.1}
-            className="-mx-[var(--page-gutter)] [scrollbar-width:none] overflow-x-auto px-[var(--page-gutter)]"
-          >
+          <p aria-hidden="true" className="flex items-baseline gap-2.5">
+            <span className="-my-4 font-display text-[4.75rem] leading-[1.25] lining-nums tabular-nums">
+              <NumberFlow
+                value={index + 1}
+                format={{ minimumIntegerDigits: 2 }}
+              />
+            </span>
+            <span className="text-[0.8125rem] text-linen tabular-nums">
+              / 0{items.length}
+            </span>
+          </p>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1 overflow-hidden">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.p
+                  key={current.id}
+                  className="font-display text-[1.875rem] leading-[1.1]"
+                  initial={{ y: '100%', opacity: 0 }}
+                  animate={{ y: '0%', opacity: 1 }}
+                  exit={{ y: '-100%', opacity: 0 }}
+                  transition={{ duration: 0.6, ease }}
+                >
+                  {current.title}
+                </motion.p>
+              </AnimatePresence>
+              <p className="pb-1 text-[0.8125rem] text-linen">{current.note}</p>
+            </div>
             <div
               role="group"
-              aria-label="Filter programmes"
-              className="inline-flex rounded-full bg-background p-1.5"
+              aria-label="Choose a programme"
+              className="grid grid-cols-7 gap-1.5"
             >
-              {programmeFilters.map((item) => {
-                const selected = item.id === filter;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => send({ type: 'FILTER', filter: item.id })}
+              {items.map((item, i) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-label={item.title}
+                  aria-pressed={i === index}
+                  onClick={() => send({ type: 'OPEN', id: item.id })}
+                  className="group/mark flex h-11 items-center"
+                >
+                  <span
                     className={cn(
-                      'relative min-h-11 rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors duration-300',
-                      selected
-                        ? 'text-primary-foreground'
-                        : 'text-muted-foreground hover:text-foreground',
+                      'h-[3px] w-full rounded-full transition-[background-color,height] duration-500 ease-brand group-hover/mark:h-[5px]',
+                      i === index
+                        ? 'bg-cream'
+                        : 'bg-cream/30 group-hover/mark:bg-cream/60',
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.1} className="flex-[1.3_1_32.5rem]">
+          <ul className="flex flex-col">
+            {items.map((item, i) => {
+              const open = i === index;
+              return (
+                <li
+                  key={item.id}
+                  className={cn(
+                    'border-b transition-[border-color] duration-500 ease-brand',
+                    open && 'border-transparent',
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'rounded-2xl transition-[background-color] duration-500 ease-brand',
+                      open ? 'theme-nude' : 'bg-transparent',
                     )}
                   >
-                    {selected && (
-                      <motion.span
-                        layoutId="programme-filter-pill"
-                        className="absolute inset-0 rounded-full bg-primary"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 380,
-                          damping: 32,
-                        }}
-                      />
-                    )}
-                    <span className="relative">{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </Reveal>
-        </div>
-
-        <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {visible.map((programme, i) => (
-              <motion.li
-                key={programme.title}
-                layout
-                initial={{ opacity: 0, scale: 0.94, y: 16 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.94 }}
-                transition={{ duration: 0.55, ease, delay: i * 0.03 }}
-              >
-                <Spotlight className="h-full rounded-3xl bg-card p-2.5 transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgb(20_16_13/0.35)]">
-                  <article className="flex h-full flex-col">
-                    <div
-                      aria-hidden="true"
-                      className={cn(
-                        'relative h-36 overflow-hidden rounded-2xl sm:h-44',
-                        art[programme.category],
-                      )}
-                    >
-                      <div
+                    <h3>
+                      <button
+                        type="button"
+                        id={`programme-${item.id}`}
+                        aria-expanded={open}
+                        aria-controls={`programme-panel-${item.id}`}
+                        onClick={() => send({ type: 'OPEN', id: item.id })}
                         className={cn(
-                          'absolute -right-10 -bottom-16 size-52 rounded-full border transition-transform duration-1000 ease-brand group-hover/spot:scale-125',
-                          programme.category === 'living'
-                            ? 'border-bone/40'
-                            : 'border-ink/30',
-                        )}
-                      />
-                      <div
-                        className={cn(
-                          'absolute -right-2 -bottom-24 size-52 rounded-full border transition-transform duration-1000 ease-brand group-hover/spot:scale-110',
-                          programme.category === 'living'
-                            ? 'border-bone/20'
-                            : 'border-ink/15',
-                        )}
-                      />
-                      <div className="grain absolute inset-0" />
-                      <span
-                        className={cn(
-                          'absolute top-4 left-4 rounded-full px-3 py-2 text-eyebrow backdrop-blur-sm',
-                          programme.category === 'living'
-                            ? 'bg-bone/12 text-bone'
-                            : 'bg-bone/55 text-ink',
+                          'group/row flex w-full items-center gap-4 px-4 text-left transition-[padding] duration-500 ease-brand sm:gap-5 lg:px-7',
+                          open ? 'py-4' : 'py-[0.5625rem]',
                         )}
                       >
-                        {categoryLabel[programme.category]}
-                      </span>
-                    </div>
-                    <div className="flex flex-1 flex-col px-4 pt-6 pb-4">
-                      <h3 className="text-display-md">{programme.title}</h3>
-                      <p className="mt-3 leading-relaxed text-muted-foreground">
-                        {programme.body}
-                      </p>
-                      <p className="[margin-block-start:1.5rem] mt-auto border-t border-border pt-4 text-sm font-medium text-foreground">
-                        {programme.format}
-                      </p>
-                    </div>
-                  </article>
-                </Spotlight>
-              </motion.li>
-            ))}
-          </AnimatePresence>
-        </ul>
-
-        <Reveal className="mt-14 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-          <p className="max-w-xl text-muted-foreground">
-            Not sure where to begin? You do not have to choose. The assessment
-            shows you your starting point.
-          </p>
-          <Button asChild size="lg">
-            <a href={platformLink('/')}>
-              Find your starting point <ArrowUpRight />
-            </a>
-          </Button>
+                        <span className="w-7 text-xs font-medium tracking-[0.12em] text-muted-foreground tabular-nums">
+                          0{i + 1}
+                        </span>
+                        <span
+                          className={cn(
+                            'flex-1 text-display-sm transition-transform duration-500 ease-brand',
+                            !open && 'group-hover/row:translate-x-1.5',
+                          )}
+                        >
+                          {item.title}
+                        </span>
+                        <PlusMinus open={open} />
+                      </button>
+                    </h3>
+                    <DisclosurePanel
+                      open={open}
+                      id={`programme-panel-${item.id}`}
+                      labelledBy={`programme-${item.id}`}
+                      className="flex flex-col gap-4 px-4 pb-6 sm:pl-[3.75rem] lg:pr-7 lg:pl-[4.75rem]"
+                    >
+                      <p className="max-w-[38.75rem] text-umber">{item.body}</p>
+                      <ul className="flex flex-wrap gap-2 text-[0.8125rem]">
+                        {item.tags.map((tag) => (
+                          <li
+                            key={tag}
+                            className="rounded-full border px-3.5 py-[0.4375rem]"
+                          >
+                            {tag}
+                          </li>
+                        ))}
+                      </ul>
+                      {i === 0 ? (
+                        <a
+                          href={platformLink('/')}
+                          className="group/link flex items-center gap-2.5 self-start link-rule py-2 text-[0.9375rem] font-medium"
+                        >
+                          {programmes.assessmentCta}
+                          <ArrowUpRight
+                            aria-hidden="true"
+                            strokeWidth={1.6}
+                            className="size-[0.9375rem] transition-transform duration-500 ease-brand group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                          />
+                        </a>
+                      ) : null}
+                    </DisclosurePanel>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </Reveal>
       </div>
     </section>

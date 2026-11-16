@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     template: '%s · Halo Health',
   },
   description:
-    'Preventive health and longevity, guided by physicians. A clinical health assessment, physician-reviewed results and a personal plan you can live with.',
+    'Preventive health and longevity, guided by physicians. A physician-led assessment, one personal plan and a care team that stays with you.',
   openGraph: {
     title: 'Halo Health · Lifestyle Medicine Center',
     description:
@@ -47,10 +47,13 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Halo Health',
   },
+  // Soft launch: copy and photography are still draft, so search engines are
+  // asked to stay out. Remove this line for the public launch.
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#14100d',
+  themeColor: '#0a0908',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

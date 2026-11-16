@@ -5,315 +5,505 @@
  * here describes how the service is designed, not a measured outcome. Do not
  * add statistics, partner names, approvals or testimonials until they are
  * confirmed. Programme names are working names pending trademark clearance.
+ *
+ * Headlines are arrays of segments so parts can be set in italic (`em`) or
+ * in the quieter second tone (`soft`).
  */
 
+export interface Segment {
+  text: string;
+  em?: boolean;
+  soft?: boolean;
+}
+
 export const nav = [
-  { label: 'How it works', href: '#how-it-works' },
   { label: 'Programmes', href: '#programmes' },
-  { label: 'Our standards', href: '#standards' },
-  { label: 'The app', href: '#daily' },
+  { label: 'How it works', href: '#how-it-works' },
+  { label: 'Care team', href: '#care-team' },
   { label: 'For organisations', href: '#organisations' },
+  { label: 'Journal', href: '#journal' },
 ] as const;
+
+export const notice = {
+  short: 'Preventive care, not an emergency service.',
+  long: 'Halo Health offers preventive care and is not an emergency service. In an emergency, call your local emergency number.',
+} as const;
+
+export const cta = {
+  primary: 'Start your assessment',
+  signIn: 'Sign in',
+  team: 'Talk to our team',
+} as const;
 
 export const hero = {
-  eyebrow: 'Lifestyle Medicine Center',
+  eyebrow: 'Preventive health and longevity',
+  /** One entry per line of the headline. */
   titleLines: [
-    [{ text: 'Know where your' }, { text: 'health stands.' }],
-    [
-      { text: 'Know what', em: true },
-      { text: 'comes next.', em: true },
-    ],
-  ],
-  body: 'A clinical health assessment, results reviewed by a physician, and a personal plan you can actually live with. A few small actions at a time.',
-  primaryCta: 'Start your assessment',
+    { text: 'Know where your' },
+    { text: 'health stands.' },
+    { text: 'Know what comes next.', em: true },
+  ] satisfies Segment[],
+  body: 'A physician-led assessment, one personal plan and a care team that stays with you. Preventive medicine, made part of daily life.',
   secondaryCta: 'See how it works',
   assurances: [
-    'Physician-reviewed results',
+    'Every result signed by a physician',
+    'One plan, one care team',
     'Your data stays yours',
-    'No miracle claims',
   ],
+  firstStep: {
+    eyebrow: 'Your first step',
+    title: 'The Longevity Assessment',
+    body: 'Questionnaire, indicated tests and a physician’s review.',
+  },
+  imageAlt: 'A woman in profile in warm low light, eyes closed, calm',
 } as const;
 
-export const expect = {
-  eyebrow: 'What to expect',
-  title: 'Prevention, practised with the rigour of medicine.',
-  items: [
-    {
-      from: 0,
-      value: 1,
-      label: 'physician',
-      body: 'A real physician reviews and signs every clinical result before you see it.',
-    },
-    {
-      from: 0,
-      value: 2,
-      valueTo: 5,
-      label: 'small actions a day',
-      body: 'Your plan becomes two to five daily steps. Enough to change things, not enough to overwhelm.',
-    },
-    {
-      from: 0,
-      value: 4,
-      label: 'people, at most',
-      body: 'Only you, your physician, your coach and clinical governance can ever see your health data.',
-    },
-    {
-      from: 9,
-      value: 0,
-      label: 'AI in clinical decisions',
-      body: 'Every clinical decision belongs to a licensed professional. Always.',
-    },
-  ],
+export const audiences = {
+  eyebrow: 'Care designed for',
+  items: ['Individuals', 'Employers', 'Insurers', 'Medical groups'],
 } as const;
 
-export const marquee = [
-  'The science of prevention',
-  'The practice of living well',
-] as const;
+export const statement = {
+  eyebrow: 'Lifestyle medicine',
+  title: [
+    { text: 'Preventive health and longevity,' },
+    { text: 'guided by physicians', em: true },
+    { text: 'and built into the way you already live.', soft: true },
+  ] satisfies Segment[],
+} as const;
+
+export type PillarId = 'nourish' | 'move' | 'sleep' | 'restore';
+
+export const pillars: {
+  id: PillarId;
+  area: string;
+  title: string;
+  body: string;
+  imageAlt: string;
+}[] = [
+  {
+    id: 'nourish',
+    area: 'Nutrition',
+    title: 'Nourish',
+    body: 'Food that suits your results, your tastes and your week.',
+    imageAlt:
+      'Hands pouring olive oil over a bowl of roasted vegetables and grains',
+  },
+  {
+    id: 'move',
+    area: 'Movement',
+    title: 'Move',
+    body: 'Strength and mobility, built at your own pace.',
+    imageAlt: 'A grey-haired man stretching his arm overhead in warm light',
+  },
+  {
+    id: 'sleep',
+    area: 'Sleep',
+    title: 'Rest',
+    body: 'Sleep treated as a foundation, not an afterthought.',
+    imageAlt: 'A woman asleep in linen bedding in low warm light',
+  },
+  {
+    id: 'restore',
+    area: 'Stress and recovery',
+    title: 'Restore',
+    body: 'Calm, recovery and room to breathe in a full life.',
+    imageAlt: 'Hands cupped around a steaming ceramic cup on a wooden table',
+  },
+];
+
+/**
+ * Design promises, not outcomes. `parts` are animated numbers joined by an
+ * italic word; `from` is where the count starts.
+ */
+export const promises: {
+  parts: { from: number; value: number }[];
+  joiner?: string;
+  title: string;
+  body: string;
+}[] = [
+  {
+    parts: [{ from: 0, value: 1 }],
+    title: 'Physician signs every result',
+    body: 'Nothing reaches you without a physician’s review and signature.',
+  },
+  {
+    parts: [
+      { from: 0, value: 2 },
+      { from: 0, value: 5 },
+    ],
+    joiner: 'to',
+    title: 'Small actions a day',
+    body: 'Your plan arrives as a few daily steps, sized to fit real life.',
+  },
+  {
+    parts: [
+      { from: 0, value: 6 },
+      { from: 0, value: 12 },
+    ],
+    joiner: 'and',
+    title: 'Month follow-ups',
+    body: 'We measure again, compare with your baseline and adjust the plan.',
+  },
+  {
+    parts: [{ from: 9, value: 0 }],
+    title: 'Clinical decisions made by AI',
+    body: 'Technology keeps things organised. People decide on your care.',
+  },
+];
 
 export const journey = {
   eyebrow: 'How it works',
-  title: 'One clear path, from first question to lasting habit.',
-  body: 'However you arrive, the journey is the same. Each step leads to one obvious next step.',
+  titleLines: [
+    { text: 'A clear path,' },
+    { text: 'one step at a time.', em: true },
+  ] satisfies Segment[],
   steps: [
     {
       title: 'Assess',
-      body: 'Answer a clinically governed health assessment at your own pace. It looks for warning signs and calculates published risk scores.',
-      meta: 'Online, at your own pace',
-    },
-    {
-      title: 'Examine',
-      body: 'The assessment configures the examinations that fit your risk profile. Book them with a provider in the network.',
-      meta: 'Only what is indicated for you',
+      body: 'A health questionnaire first, then the measurements and tests your physician considers indicated.',
     },
     {
       title: 'Understand',
-      body: 'A physician reviews and signs your results. You get a plain-language explanation first, with the clinical detail one tap away.',
-      meta: 'Signed by a physician',
+      body: 'A physician reviews and signs your results, then explains them in plain language.',
     },
     {
       title: 'Plan',
-      body: 'Your physician’s recommendations become My Plan: indicated care first, then the programmes and habits that support it.',
-      meta: 'Indicated care always comes first',
+      body: 'One personal plan across nutrition, movement, sleep and stress, shaped around your life.',
     },
     {
       title: 'Live it',
-      body: 'The app turns your plan into a few small daily actions, with coaching, tools and content to keep you going.',
-      meta: 'Two to five actions a day',
-    },
-    {
-      title: 'Follow up',
-      body: 'Medical follow-up at six and twelve months shows honest progress, and your plan adjusts with you.',
-      meta: '6 and 12 months',
+      body: 'A few small actions each day, with your coach beside you and check-ins at 6 and 12 months.',
     },
   ],
 } as const;
 
-export type ProgrammeCategory = 'assess' | 'body' | 'mind' | 'living';
+export type ProgrammeImage =
+  | 'programmes'
+  | 'nourish'
+  | 'journalWalk'
+  | 'sleep'
+  | 'restore'
+  | 'move'
+  | 'app';
 
-export const programmeFilters: {
-  id: 'all' | ProgrammeCategory;
-  label: string;
-}[] = [
-  { id: 'all', label: 'All' },
-  { id: 'assess', label: 'Assess' },
-  { id: 'body', label: 'Body' },
-  { id: 'mind', label: 'Mind' },
-  { id: 'living', label: 'Longevity living' },
-];
+export interface Programme {
+  id: string;
+  title: string;
+  note: string;
+  body: string;
+  tags: string[];
+  image: ProgrammeImage;
+  imageAlt: string;
+}
 
 /** Working names (pending trademark clearance). */
-export const programmes: {
-  title: string;
-  category: ProgrammeCategory;
-  body: string;
-  format: string;
-}[] = [
-  {
-    title: 'Longevity Assessment',
-    category: 'assess',
-    body: 'The starting point: a digital assessment, the examinations that fit you, and a physician review.',
-    format: 'Digital + examinations',
-  },
-  {
-    title: 'Metabolic Health',
-    category: 'body',
-    body: 'Build steadier energy and healthier markers with a coach and physician oversight.',
-    format: 'Group or hybrid',
-  },
-  {
-    title: 'Heart Health',
-    category: 'body',
-    body: 'Understand your cardiovascular risk and lower it, with home blood-pressure tracking.',
-    format: 'Hybrid + physician review',
-  },
-  {
-    title: 'Strength & Mobility',
-    category: 'body',
-    body: 'Coach-led training to stay strong, steady and independent for decades to come.',
-    format: 'Coach-led + partner studios',
-  },
-  {
-    title: 'Sleep',
-    category: 'mind',
-    body: 'A structured programme based on CBT-I, with coach or clinician support.',
-    format: 'Digital + support',
-  },
-  {
-    title: 'Stress Resilience & Wellbeing',
-    category: 'mind',
-    body: 'Practical skills for pressure, recovery and mood, with clear routes to a care team.',
-    format: 'Digital + group',
-  },
-  {
-    title: 'Women’s Midlife & Menopause',
-    category: 'body',
-    body: 'Clear guidance through midlife, with medical decisions made by qualified professionals.',
-    format: 'Digital + group',
-  },
-  {
-    title: 'Longevity Foundations',
-    category: 'living',
-    body: 'The essentials of living well for longer, at your own pace. Coaching is optional.',
-    format: 'Self-paced',
-  },
-  {
-    title: 'Longevity Immersion',
-    category: 'living',
-    body: 'A three to seven night stay to reset your routines, then continue them at home.',
-    format: 'Hotel stay + at home',
-  },
-];
-
-export const standards = {
-  eyebrow: 'Our standards',
-  title: ['Medicine first.', 'Always.'],
-  body: 'Wellness is full of promises. We would rather be precise. These rules are built into how Halo Health works, not added on top.',
-  cards: [
+export const programmes = {
+  eyebrow: 'Programmes',
+  titleLines: [
+    { text: 'Programmes shaped by' },
+    { text: 'what your results show.', em: true },
+  ] satisfies Segment[],
+  body: 'Everything begins with the assessment. From there, your physician recommends only the programmes that are indicated for you.',
+  assessmentCta: 'Start the assessment',
+  items: [
     {
-      icon: 'signature',
-      title: 'Signed by a physician',
-      body: 'Every clinical result you see has been reviewed and signed by a real physician.',
+      id: 'longevity-assessment',
+      title: 'Longevity Assessment',
+      note: 'Where everyone starts',
+      body: 'A complete starting picture of your health: a questionnaire, physical measurements and the laboratory tests your physician considers indicated. Reviewed, signed and turned into a personal plan.',
+      tags: [
+        'Questionnaire',
+        'Indicated tests',
+        'Physician review',
+        'Personal plan',
+      ],
+      image: 'programmes',
+      imageAlt:
+        'A physician in an ivory blazer listening to a patient across a small table',
     },
     {
-      icon: 'shield',
-      title: 'Your data is yours',
-      body: 'Employers and insurers only ever see anonymous totals. Your individual results are never used for premiums, pricing or eligibility.',
+      id: 'metabolic-health',
+      title: 'Metabolic Health',
+      note: 'Energy and markers',
+      body: 'Work towards steadier energy and healthier markers, with a coach beside you and a physician overseeing the plan.',
+      tags: ['Coach-led', 'Physician oversight', 'Group or hybrid'],
+      image: 'nourish',
+      imageAlt:
+        'Hands pouring olive oil over a bowl of roasted vegetables and grains',
     },
     {
-      icon: 'stethoscope',
-      title: 'Care before commerce',
-      body: 'Indicated care always comes before optional programmes. There are no offers on your results.',
+      id: 'heart-health',
+      title: 'Heart Health',
+      note: 'Cardiovascular risk',
+      body: 'Understand your cardiovascular risk and work on it step by step, with blood-pressure tracking at home and physician review.',
+      tags: ['Hybrid', 'Physician review', 'Home blood pressure'],
+      image: 'journalWalk',
+      imageAlt: 'A couple in their sixties walking a coastal path at sunset',
     },
     {
-      icon: 'user',
-      title: 'People make clinical decisions',
-      body: 'Automation may schedule and remind. It never decides. No AI in clinical decisions or health advice.',
+      id: 'sleep',
+      title: 'Sleep',
+      note: 'Rest and recovery',
+      body: 'A structured programme based on CBT-I, with support from a coach or clinician when you need it.',
+      tags: ['Digital', 'Based on CBT-I', 'Coach or clinician support'],
+      image: 'sleep',
+      imageAlt: 'A woman asleep in linen bedding in low warm light',
     },
-  ],
-  wontFindTitle: 'What you won’t find here',
-  wontFind: [
-    'Detoxes and cleanses',
-    'IV and NAD+ drips',
-    'Peptides',
-    'Age-reversal promises',
-    'Before-and-after photos',
-    'Pressure to buy',
-  ],
+    {
+      id: 'stress-resilience',
+      title: 'Stress Resilience and Wellbeing',
+      note: 'Pressure and mood',
+      body: 'Practical skills for pressure, recovery and mood, with clear routes to a care team.',
+      tags: ['Digital', 'Group sessions'],
+      image: 'restore',
+      imageAlt: 'Hands cupped around a steaming ceramic cup on a wooden table',
+    },
+    {
+      id: 'strength-mobility',
+      title: 'Strength and Mobility',
+      note: 'Strong and steady',
+      body: 'Coach-led training to stay strong, steady and independent, at home or with partner studios.',
+      tags: ['Coach-led', 'Partner studios'],
+      image: 'move',
+      imageAlt: 'A grey-haired man stretching his arm overhead in warm light',
+    },
+    {
+      id: 'womens-midlife',
+      title: 'Women’s Midlife and Menopause',
+      note: 'Midlife, guided',
+      body: 'Clear guidance through midlife, with every medical decision made by qualified professionals.',
+      tags: ['Digital', 'Group sessions'],
+      image: 'app',
+      imageAlt:
+        'A woman relaxed on a linen sofa with a cup, looking at her phone',
+    },
+  ] satisfies [Programme, ...Programme[]],
 } as const;
 
-export const daily = {
-  eyebrow: 'The app',
-  title: 'Small actions. Every day. That is the whole secret.',
-  body: 'The Halo Health app turns your plan into two to five small actions a day, then helps you keep going with coaching, lifestyle tools and honest progress.',
-  points: [
-    'One clear next step, every time you open it',
-    'Gentle streaks, never competition',
-    'Help is always one tap away',
-  ],
-  phone: {
-    greeting: 'Good morning',
-    heading: 'Today',
-    note: 'Illustrative example',
-    actions: [
-      { label: '10-minute walk after lunch', meta: 'Movement', done: true },
-      { label: 'Protein with breakfast', meta: 'Nutrition', done: true },
-      { label: 'Evening blood pressure', meta: 'Measurement', done: false },
-      { label: 'Lights out by 22:30', meta: 'Sleep', done: false },
+export type TeamImage = 'physician' | 'coach' | 'navigator' | 'specialist';
+
+export const careTeam = {
+  eyebrow: 'Your care team',
+  titleLines: [
+    { text: 'The people' },
+    { text: 'behind your plan.', em: true },
+  ] satisfies Segment[],
+  body: 'One team that knows your results and each other. You meet them by name when you begin.',
+  /** Roles, not named people. Portraits are illustrative. */
+  roles: [
+    {
+      image: 'physician',
+      area: 'Medicine',
+      title: 'Your physician',
+      body: 'Reviews and signs every result, and leads your plan.',
+      imageAlt:
+        'Portrait of a physician with grey-streaked hair in a dark blazer',
+    },
+    {
+      image: 'coach',
+      area: 'Coaching',
+      title: 'Your coach',
+      body: 'Turns the plan into habits and keeps you company along the way.',
+      imageAlt: 'Portrait of a smiling coach with a short beard in a sand knit',
+    },
+    {
+      image: 'navigator',
+      area: 'Coordination',
+      title: 'Your care navigator',
+      body: 'Books, reminds and answers, so nothing falls between appointments.',
+      imageAlt: 'Portrait of a care navigator in a cream knit, smiling softly',
+    },
+    {
+      image: 'specialist',
+      area: 'Specialist care',
+      title: 'Partner specialists',
+      body: 'Cardiology, nutrition, sleep and more, brought in when indicated.',
+      imageAlt:
+        'Portrait of a specialist with silver hair, a beard and round glasses',
+    },
+  ] satisfies {
+    image: TeamImage;
+    area: string;
+    title: string;
+    body: string;
+    imageAlt: string;
+  }[],
+} as const;
+
+export const places = [
+  {
+    id: 'clinic',
+    label: 'In person',
+    title: [{ text: 'At a partner' }, { text: 'clinic', em: true }],
+    points: [
+      'Measurements and indicated tests',
+      'Unhurried time with your physician',
+      'Specialists when they are needed',
     ],
+    cta: 'Book your assessment',
+    imageAlt:
+      'A physician and a patient talking in armchairs in a lamp-lit room at dusk',
   },
-} as const;
+  {
+    id: 'app',
+    label: 'Every day',
+    title: [{ text: 'In the Halo Health' }, { text: 'app', em: true }],
+    points: [
+      'Your daily actions, a few at a time',
+      'Results and plan in one place',
+      'Your coach and care team close at hand',
+    ],
+    cta: 'Open Halo Health',
+    imageAlt:
+      'A woman relaxed on a linen sofa with a cup, looking at her phone',
+  },
+] satisfies {
+  id: 'clinic' | 'app';
+  label: string;
+  title: Segment[];
+  points: string[];
+  cta: string;
+  imageAlt: string;
+}[];
 
 export const organisations = {
   eyebrow: 'For organisations',
-  title: 'Preventive health for the people you look after.',
-  body: 'Halo Health is configured for your organisation, under our brand or yours. People keep their account and their data, whatever changes.',
-  cta: 'Talk to our team',
-  tabs: [
+  title: [
+    { text: 'Prevention for the people' },
+    { text: 'you look after.', em: true },
+  ] satisfies Segment[],
+  body: 'Employers and insurers see aggregate results only. Individual health data stays with the individual and their care team.',
+  cards: [
     {
-      id: 'insurers',
-      label: 'Insurers',
-      title: 'Prevention your members will use',
-      body: 'Offer screening, examinations and programmes through one journey. You receive aggregate reporting only. Individual health data never reaches underwriting.',
-      points: [
-        'Eligibility and packages configured, not coded',
-        'A provider network with booking built in',
-        'Aggregate, anonymised reporting',
-      ],
+      title: 'Employers',
+      body: 'A health benefit your people will use, with reporting in aggregate only.',
     },
     {
-      id: 'medical-groups',
-      label: 'Medical groups',
-      title: 'Your brand, your physicians, your patients',
-      body: 'Run the platform under your own name with your own package catalogue. Your physicians interpret the results, and recalls return to you.',
-      points: [
-        'White-label member experience',
-        'A clinical portal for your physicians',
-        'Recall brings patients back to your group',
-      ],
+      title: 'Insurers',
+      body: 'Structured prevention programmes with planned follow-up for your members.',
     },
     {
-      id: 'employers',
-      label: 'Employers',
-      title: 'A benefit people trust',
-      body: 'Give your team a credible route to better health. You see participation and totals, never anyone’s individual results.',
-      points: [
-        'Simple activation for your team',
-        'Team challenges that stay kind',
-        'Participation and aggregate insight only',
-      ],
+      title: 'Medical groups',
+      body: 'A lifestyle medicine pathway that extends the care you already give.',
     },
   ],
 } as const;
 
+export const questions = {
+  eyebrow: 'Questions',
+  title: [
+    { text: 'Asked' },
+    { text: 'before starting.', em: true },
+  ] satisfies Segment[],
+  body: 'Something we have not covered? Write to us and a person will reply.',
+  contactCta: 'Write to us',
+  items: [
+    {
+      id: 'who-reviews',
+      question: 'Who reviews my results?',
+      answer:
+        'A physician reviews and signs every result before you see it, then explains what it means for you and what, if anything, to do next.',
+    },
+    {
+      id: 'who-sees',
+      question: 'Who can see my health data?',
+      answer:
+        'Only you, your physician, your coach and clinical governance. Nobody else, and never for advertising.',
+    },
+    {
+      id: 'employer-insurer',
+      question: 'Does my employer or insurer see my results?',
+      answer:
+        'No. Employers and insurers only ever see anonymous totals. Your individual results are never used for premiums, pricing or eligibility.',
+    },
+    {
+      id: 'ai',
+      question: 'Is AI making decisions about my care?',
+      answer:
+        'No. Automation may schedule and remind. Every clinical decision and all health advice comes from a licensed professional.',
+    },
+    {
+      id: 'after',
+      question: 'What happens after the assessment?',
+      answer:
+        'Your physician’s recommendations become your plan: indicated care first, then the programmes and habits that support it. Follow-up at six and twelve months shows your progress.',
+    },
+  ],
+} as const;
+
+export type JournalImage = 'journalNotes' | 'journalWalk' | 'journalSleep';
+
+/** Sample titles: the journal has not launched yet. */
+export const journal = {
+  eyebrow: 'Journal',
+  title: [
+    { text: 'Notes on' },
+    { text: 'living well, longer.', em: true },
+  ] satisfies Segment[],
+  status: 'Opening soon',
+  articles: [
+    {
+      image: 'journalNotes',
+      topic: 'Assessment',
+      title: 'What a preventive health assessment actually looks at',
+      imageAlt:
+        'Hands writing with a fountain pen beside a notebook and a ceramic cup',
+    },
+    {
+      image: 'journalWalk',
+      topic: 'Movement',
+      title: 'Walking, strength and the years ahead',
+      imageAlt: 'A couple in their sixties walking a coastal path at sunset',
+    },
+    {
+      image: 'journalSleep',
+      topic: 'Sleep',
+      title: 'An evening routine your physician would recognise',
+      imageAlt:
+        'A bedside table with a lit lamp, a glass of water and an open book',
+    },
+  ] satisfies {
+    image: JournalImage;
+    topic: string;
+    title: string;
+    imageAlt: string;
+  }[],
+} as const;
+
 export const closing = {
-  title: ['Start with one clear picture', 'of your health.'],
-  body: 'The assessment takes a little time and a little honesty. What you get back is clarity, and one next step.',
-  primaryCta: 'Start your assessment',
-  secondaryCta: 'Talk to our team',
+  eyebrow: 'Begin',
+  title: [
+    { text: 'Start with one clear picture' },
+    { text: 'of your health.', em: true },
+  ] satisfies Segment[],
+  body: 'The assessment begins with a questionnaire you can complete at home, in your own time.',
+  imageAlt:
+    'A figure standing at the shoreline at dawn, the sea reflecting the first light',
 } as const;
 
 export const footer = {
-  tagline: 'Preventive health and longevity, guided by physicians.',
-  emergency:
-    'Halo Health does not provide emergency care. If you think you may have a medical emergency, call your local emergency number straight away.',
+  tagline:
+    'Physician-led preventive health and longevity care, in person and in everyday life.',
   columns: [
     {
-      title: 'Explore',
+      title: 'Care',
       links: [
-        { label: 'How it works', href: '#how-it-works' },
         { label: 'Programmes', href: '#programmes' },
-        { label: 'Our standards', href: '#standards' },
-        { label: 'The app', href: '#daily' },
+        { label: 'How it works', href: '#how-it-works' },
+        { label: 'Care team', href: '#care-team' },
+        { label: 'Journal', href: '#journal' },
       ],
     },
     {
       title: 'Organisations',
       links: [
+        { label: 'Employers', href: '#organisations' },
         { label: 'Insurers', href: '#organisations' },
         { label: 'Medical groups', href: '#organisations' },
-        { label: 'Employers', href: '#organisations' },
       ],
     },
   ],
+  rights: 'Halo Health. All rights reserved.',
+  wordmark: 'Halo Health',
 } as const;

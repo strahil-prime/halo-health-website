@@ -55,18 +55,29 @@ pnpm format       # fix formatting
 - Tokens live in `src/styles/tokens.css` in three layers: palette (`--hh-*`),
   semantic (`--background`, `--primary`…) and themes. Tailwind maps them in
   `src/app/globals.css`.
+- The look: ivory ground, noir bands, nude accents, photography on rounded
+  (`rounded-3xl`) cards, serif display type with italic emphasis.
 - Components use semantic classes (`bg-background`, `text-muted-foreground`,
-  `text-accent`, `border-border`). Palette classes (`bg-ink`, `text-gold`,
-  `bg-ember`…) are for brand art only: gradients, glows, illustrations.
-- Dark sections: add `theme-ink` to the section. It flips the semantic tokens,
-  so the same components work on dark without `dark:` variants.
-- Type: `text-display-2xl|xl|lg|md` (serif display), `text-lead`,
-  `text-eyebrow`. Body is Inter. Do not set font sizes for headings by hand.
-- Layout: `container-page` for width and gutters, `section-y` for vertical
-  rhythm.
-- Brand art utilities: `halo-ring` (+ `animate-halo-spin`, size with width,
-  thickness with `[--halo-thickness:2px]`), `bg-gradient-dawn`,
-  `text-gradient-warm`, `grain`, `link-underline`.
+  `text-accent`, `border-border`). Palette classes (`bg-noir`, `text-linen`,
+  `bg-cream`…) are for brand art only: photo scrims, glass chips, text that
+  sits on a photograph.
+- Themed surfaces: add `theme-ink` (noir) or `theme-nude` to the element. It
+  flips the semantic tokens, so the same components work there without `dark:`
+  variants. Both set the background themselves; use `bg-transparent!` to opt
+  out (as the header does).
+- Type: `text-display-2xl|xl|lg|md|sm` (serif display), `text-lead`,
+  `text-eyebrow`. Body is Inter. Emphasis in a headline is italic (`<em>`),
+  never bold. Numbers set in the display font need `lining-nums`.
+- Layout: `container-page` for width and gutters, `section-t` for the space
+  above a section. Full-bleed rounded bands sit in `inset-x` and pad their
+  content with `band-x` so it lines up with `container-page`.
+- Brand primitives in `src/components/brand/`: `PillLink` and `ArrowBadge`
+  (buttons and the arrow that swaps on hover), `Eyebrow`, `Segments` (headline
+  parts with italic emphasis), `Logo`.
+- Brand art utilities: `glass-ink` (chips on photographs), `grain`,
+  `link-underline`, `link-rule`.
+- Photography: static imports in `src/assets/home/index.ts`, rendered with
+  `next/image` and `placeholder="blur"`. The current photos are stand-ins.
 - Fonts are self-hosted in `src/fonts`. The style guide's display font is
   The Seasons (commercial); Cormorant Garamond stands in until licensed files
   are added in `src/app/layout.tsx`.
@@ -85,9 +96,11 @@ pnpm format       # fix formatting
 **Animation**
 
 - Shared primitives in `src/components/motion/`: `Reveal` (fade and rise on
-  scroll), `SplitWords` (headline word reveal), `Magnetic` (button pull),
-  `Spotlight` (pointer-following light on cards). Use these before writing new
-  animation code.
+  scroll), `RevealLines` (headline lines rising out of a clipped row),
+  `RevealRule` (hairline that draws itself), `ScrollWords` (a statement that
+  fills in as you scroll), `Parallax` (drifting photo layer), `Magnetic`
+  (button pull), `Spotlight` (pointer-following light on cards). Use these
+  before writing new animation code.
 - Pick one tool per element:
   - **Motion** for component-level enter/exit, hover, layout and gesture
     animation. Import from `motion/react`.
@@ -95,8 +108,10 @@ pnpm format       # fix formatting
     `useGSAP` hook with a `scope` ref (it cleans up for you). Register
     plugins once at module level.
   - **CSS / Tailwind** (`tw-animate-css`) for simple transitions.
-- Respect reduced motion: `motion-safe:` in Tailwind, `gsap.matchMedia()` with
-  `(prefers-reduced-motion: no-preference)`, and `useReducedMotion()` in Motion.
+- Respect reduced motion: `motion-safe:` / `motion-reduce:` in Tailwind,
+  `gsap.matchMedia()` with `(prefers-reduced-motion: no-preference)`, and
+  `useReducedMotion()` in Motion. Never render different markup for reduced
+  motion (it breaks hydration); change styles only.
 - Never animate layout-affecting properties when a transform will do.
 
 **State**
@@ -105,12 +120,13 @@ pnpm format       # fix formatting
 - XState for anything with more than two states or rules between them
   (multi-step CTAs, quizzes, filters, menus). Define machines in
   `src/machines/` with `setup({ types })`, consume with `useMachine`. See
-  `programme-filter-machine.ts`.
+  `accordion-machine.ts` (programmes, questions) and `menu-machine.ts`.
 
 **Numbers**
 
 - Use `<NumberFlow />` for any number that changes in front of the user
-  (stats, pricing, counters). Use `tabular-nums`.
+  (stats, pricing, counters). Use `tabular-nums`, plus `lining-nums` and
+  `leading-[1.25]` when the number is set in the display font.
 
 **Accessibility**
 

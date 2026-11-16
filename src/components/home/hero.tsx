@@ -1,246 +1,149 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowDown, ArrowUpRight, Check } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Check } from 'lucide-react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'motion/react';
+import Image from 'next/image';
 import { useRef } from 'react';
-import { HaloParticles } from '@/components/home/halo-particles';
-import { Magnetic } from '@/components/motion/magnetic';
-import { Reveal, SplitWords } from '@/components/motion/reveal';
-import { Button } from '@/components/ui/button';
-import { hero } from '@/content/home';
+import { photos } from '@/assets/home';
+import { ArrowBadge, PillLink } from '@/components/brand/pill-link';
+import { Reveal, RevealLines } from '@/components/motion/reveal';
+import { cta, hero } from '@/content/home';
 import { platformLink } from '@/lib/env';
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/**
- * The hero. A living "halo" (the ring from the logo) made of light:
- * conic-gradient rings that turn slowly, a breathing glow, drifting dust,
- * pointer parallax (GSAP quickTo) and a scroll-scrubbed exit (ScrollTrigger).
- * To use film instead, drop a <video> into the `data-hero-media` layer.
- */
 export function Hero() {
-  const scope = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // Scroll: the halo swells and the copy lifts away.
-        gsap.to('[data-halo-scroll]', {
-          scale: 1.35,
-          yPercent: 12,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: scope.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-        });
-        gsap.to('[data-hero-copy]', {
-          yPercent: -18,
-          opacity: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: scope.current,
-            start: 'top top',
-            end: '70% top',
-            scrub: true,
-          },
-        });
-      });
-
-      mm.add(
-        '(prefers-reduced-motion: no-preference) and (pointer: fine)',
-        () => {
-          // Pointer: layers drift at different depths.
-          const layers = gsap.utils.toArray<HTMLElement>('[data-depth]');
-          const movers = layers.map((layer) => ({
-            depth: Number(layer.dataset.depth),
-            x: gsap.quickTo(layer, 'x', { duration: 1.2, ease: 'power3.out' }),
-            y: gsap.quickTo(layer, 'y', { duration: 1.2, ease: 'power3.out' }),
-          }));
-          const onMove = (event: PointerEvent) => {
-            const nx = event.clientX / window.innerWidth - 0.5;
-            const ny = event.clientY / window.innerHeight - 0.5;
-            for (const m of movers) {
-              m.x(nx * m.depth);
-              m.y(ny * m.depth);
-            }
-          };
-          window.addEventListener('pointermove', onMove);
-          return () => window.removeEventListener('pointermove', onMove);
-        },
-      );
-    },
-    { scope },
-  );
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+  // The photograph sinks and, on wide screens, the copy lifts away as the
+  // hero leaves. On phones the hero is taller than the screen, so the copy
+  // stays put (see the max-lg overrides below).
+  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '16%']);
+  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '-8%']);
+  const copyOpacity = useTransform(scrollYProgress, [0.25, 0.8], [1, 0]);
 
   return (
-    <section
-      ref={scope}
-      id="top"
-      className="theme-ink relative isolate flex min-h-svh flex-col overflow-hidden"
-    >
-      {/* ---------- Media layer ---------- */}
+    <section id="top" aria-label="Introduction" className="inset-x">
       <div
-        data-hero-media
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
+        ref={ref}
+        className="theme-ink relative isolate flex min-h-[clamp(40rem,calc(100svh-3.5rem),55rem)] flex-col overflow-hidden rounded-3xl"
       >
-        {/* Warm atmosphere */}
-        <div
-          data-depth="-14"
-          className="absolute inset-[-10%] bg-[radial-gradient(48%_42%_at_72%_42%,rgb(217_138_91/0.34),transparent_72%),radial-gradient(40%_36%_at_18%_88%,rgb(236_196_151/0.14),transparent_70%)] max-lg:bg-[radial-gradient(90%_40%_at_60%_26%,rgb(217_138_91/0.34),transparent_72%)]"
-        />
-
-        {/* The halo */}
-        <div className="absolute top-[30%] left-[62%] w-[clamp(24rem,118vw,34rem)] -translate-x-1/2 -translate-y-1/2 lg:top-[47%] lg:left-[71%] lg:w-[clamp(34rem,52vw,54rem)]">
-          <div data-depth="34">
-            <div data-halo-scroll>
-              <motion.div
-                className="relative aspect-square"
-                initial={{ opacity: 0, scale: 0.82, rotate: -30 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: 2.4, ease }}
-              >
-                {/* Inner light */}
-                <div className="absolute inset-[6%] animate-halo-breathe rounded-full bg-[radial-gradient(closest-side,rgb(251_230_204/0.16),rgb(217_138_91/0.07)_55%,transparent)]" />
-                {/* Glow */}
-                <div className="absolute inset-0 halo-ring animate-halo-spin opacity-80 blur-2xl [--halo-thickness:3.5rem]" />
-                <div className="absolute inset-0 halo-ring animate-halo-spin opacity-90 blur-md [--halo-thickness:0.6rem]" />
-                {/* Crisp ring */}
-                <div className="absolute inset-0 halo-ring animate-halo-spin [--halo-thickness:1.5px]" />
-                {/* Outer counter-ring */}
-                <div className="absolute inset-[-11%] halo-ring animate-[halo-spin_46s_linear_infinite_reverse] opacity-45 [--halo-thickness:1px]" />
-                {/* The two arcs of the logo */}
-                <svg
-                  viewBox="0 0 200 200"
-                  fill="none"
-                  className="absolute inset-[-4.5%] size-[109%] text-bone/55"
-                >
-                  <motion.path
-                    d="M 88 3 A 97 97 0 0 1 193 76"
-                    stroke="currentColor"
-                    strokeWidth="0.35"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2.6, delay: 0.5, ease }}
-                  />
-                  <motion.path
-                    d="M 112 197 A 97 97 0 0 1 7 124"
-                    stroke="currentColor"
-                    strokeWidth="0.35"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2.6, delay: 0.8, ease }}
-                  />
-                </svg>
-                <HaloParticles />
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        {/* Legibility + texture */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/55 to-transparent max-lg:bg-gradient-to-t max-lg:via-ink/70" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
-        <div className="grain absolute inset-0" />
-      </div>
-
-      {/* ---------- Copy ---------- */}
-      <div
-        data-hero-copy
-        className="container-page flex flex-1 flex-col justify-end pt-[calc(var(--header-height)+3rem)] pb-10 lg:justify-center lg:pb-0"
-      >
-        <Reveal immediate delay={0.2} y={12}>
-          <p className="flex items-center gap-3 text-eyebrow text-accent">
-            <span className="inline-block h-px w-8 bg-accent" />
-            {hero.eyebrow}
-          </p>
-        </Reveal>
-
-        <h1 className="mt-7 max-w-[14ch] text-display-2xl text-balance">
-          <span className="sr-only">
-            {hero.titleLines
-              .flat()
-              .map((part) => part.text)
-              .join(' ')}
-          </span>
-          <span aria-hidden="true">
-            {hero.titleLines.map((line, lineIndex) => (
-              <span key={lineIndex} className="block">
-                {line.map((part, partIndex) => (
-                  <SplitWords
-                    key={part.text}
-                    immediate
-                    text={part.text}
-                    delay={0.35 + lineIndex * 0.28 + partIndex * 0.12}
-                    className="block"
-                    wordClassName={
-                      'em' in part && part.em
-                        ? 'text-gradient-warm pr-[0.06em] italic'
-                        : undefined
-                    }
-                  />
-                ))}
-              </span>
-            ))}
-          </span>
-        </h1>
-
-        <Reveal immediate delay={1.15} className="mt-8 max-w-xl">
-          <p className="text-lead text-foreground/80">{hero.body}</p>
-        </Reveal>
-
-        <Reveal
-          immediate
-          delay={1.3}
-          className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-4"
+        <motion.div
+          aria-hidden="true"
+          className="absolute inset-x-0 -top-[2%] -bottom-[16%] -z-10"
+          style={{ y: reduce ? 0 : imageY }}
         >
-          <Magnetic>
-            <Button asChild size="lg" className="pr-5">
-              <a href={platformLink('/')}>
-                {hero.primaryCta}
-                <span className="grid size-8 place-items-center rounded-full bg-ink text-bone transition-transform duration-500 group-hover/button:rotate-45">
-                  <ArrowUpRight />
-                </span>
-              </a>
-            </Button>
-          </Magnetic>
-          <Button asChild size="lg" variant="ghost">
-            <a href="#how-it-works">
-              {hero.secondaryCta}
-              <ArrowDown className="transition-transform duration-300 group-hover/button:translate-y-0.5" />
-            </a>
-          </Button>
-        </Reveal>
-      </div>
+          <motion.div
+            className="absolute inset-0"
+            initial={{ scale: 1.12 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2.6, ease }}
+          >
+            <Image
+              src={photos.hero}
+              alt=""
+              fill
+              priority
+              placeholder="blur"
+              sizes="100vw"
+              className="object-cover object-[92%_22%] sm:object-[80%_30%] lg:object-[72%_30%]"
+            />
+          </motion.div>
+        </motion.div>
+        {/* Scrims: left for the headline on wide screens, bottom on phones. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-linear-to-t from-noir from-28% via-noir/80 via-50% to-noir/10 to-78% lg:bg-linear-to-r lg:from-noir/80 lg:from-0% lg:via-noir/40 lg:via-40% lg:to-transparent lg:to-66%"
+        />
+        <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
-      {/* ---------- Assurances ---------- */}
-      <Reveal
-        immediate
-        delay={1.6}
-        y={12}
-        className="container-page pb-20 lg:pb-24"
-      >
-        <ul className="flex flex-wrap gap-x-8 gap-y-3 border-t border-border pt-6 text-sm text-foreground/75">
-          {hero.assurances.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <Check className="size-4 text-accent" aria-hidden="true" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </Reveal>
+        <motion.div
+          style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
+          className="flex flex-1 flex-col justify-end gap-8 px-5 pt-[clamp(11rem,64svh-11.75rem,26rem)] pb-7 max-lg:transform-none! max-lg:opacity-100! sm:px-8 sm:pt-72 lg:justify-between lg:px-10 lg:pt-36 lg:pb-8"
+        >
+          <div className="flex max-w-[47.5rem] flex-col gap-6 lg:gap-7">
+            <Reveal immediate delay={0.25} y={16}>
+              <p className="flex items-center gap-3.5 text-eyebrow text-linen">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-11 bg-current opacity-60 max-sm:hidden"
+                />
+                {hero.eyebrow}
+              </p>
+            </Reveal>
+            <h1 className="text-display-2xl">
+              <RevealLines
+                immediate
+                lines={hero.titleLines}
+                delay={0.35}
+                stagger={0.13}
+              />
+            </h1>
+            <Reveal immediate delay={0.85} y={20}>
+              <p className="max-w-[29.5rem] text-lead text-linen">
+                {hero.body}
+              </p>
+            </Reveal>
+            <Reveal
+              immediate
+              delay={1}
+              y={20}
+              className="flex flex-wrap items-center gap-3 max-sm:flex-col max-sm:items-stretch"
+            >
+              <PillLink href={platformLink('/')}>{cta.primary}</PillLink>
+              <PillLink href="#how-it-works" variant="outline">
+                {hero.secondaryCta}
+              </PillLink>
+            </Reveal>
+          </div>
+
+          <div className="flex flex-wrap items-end justify-between gap-8">
+            <Reveal immediate delay={1.2} y={16}>
+              <ul className="flex flex-wrap gap-x-9 gap-y-3 border-t border-cream/20 pt-5 text-sm text-linen">
+                {hero.assurances.map((item) => (
+                  <li key={item} className="flex items-center gap-2.5">
+                    <Check
+                      aria-hidden="true"
+                      strokeWidth={1.6}
+                      className="size-4 shrink-0"
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal immediate delay={1.35} y={24} className="max-lg:hidden">
+              <a
+                href="#programmes"
+                className="group/arrow flex w-[21.25rem] items-center gap-[1.125rem] rounded-[1.375rem] glass-ink bg-noir/55 py-[1.125rem] pr-[1.125rem] pl-[1.375rem] transition-[background-color,translate] duration-500 ease-brand hover:-translate-y-1 hover:bg-noir/70"
+              >
+                <span className="flex flex-1 flex-col gap-1.5">
+                  <span className="text-eyebrow text-linen">
+                    {hero.firstStep.eyebrow}
+                  </span>
+                  <span className="font-display text-[1.625rem] leading-[1.1]">
+                    {hero.firstStep.title}
+                  </span>
+                  <span className="text-[0.8125rem] leading-normal text-linen">
+                    {hero.firstStep.body}
+                  </span>
+                </span>
+                <ArrowBadge tone="line" className="size-11" />
+              </a>
+            </Reveal>
+          </div>
+        </motion.div>
+        <span className="sr-only">{hero.imageAlt}</span>
+      </div>
     </section>
   );
 }

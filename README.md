@@ -52,10 +52,11 @@ every push to `main` and every pull request.
 See `.env.example`. Only `NEXT_PUBLIC_*` values are used, because nothing on
 this site is secret.
 
-| Variable                   | Purpose                                        |
-| -------------------------- | ---------------------------------------------- |
-| `NEXT_PUBLIC_PLATFORM_URL` | Base URL of the platform app that CTAs link to |
-| `NEXT_PUBLIC_SITE_URL`     | Canonical URL of this site (metadata, OG tags) |
+| Variable                    | Purpose                                        |
+| --------------------------- | ---------------------------------------------- |
+| `NEXT_PUBLIC_PLATFORM_URL`  | Base URL of the platform app that CTAs link to |
+| `NEXT_PUBLIC_SITE_URL`      | Canonical URL of this site (metadata, OG tags) |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Address behind the "Talk to our team" links    |
 
 ## Project layout
 
@@ -63,12 +64,13 @@ this site is secret.
 src/
   app/                 routes (App Router), layout, globals.css
   components/
-    brand/             logo
-    site/              header, footer
+    brand/             logo, pill buttons, headline parts
+    site/              notice bar, header, footer
     home/              homepage sections
-    motion/            shared animation primitives (Reveal, SplitWords…)
+    motion/            shared animation primitives (Reveal, RevealLines…)
     ui/                shadcn/ui components (owned code, edit freely)
     magicui/           Magic UI components (owned code, edit freely)
+  assets/home/         homepage photography (static imports)
   content/home.ts      all homepage copy
   machines/            XState machines
   lib/                 utils (cn), env + platformLink() + contactLink()
@@ -90,9 +92,17 @@ new components use the semantic tokens (`bg-primary`, not hex values).
 
 Tokens live in `src/styles/tokens.css` and are mapped into Tailwind in
 `src/app/globals.css`. They grew out of the brand style guide (black, white,
-NUDE `#E7D7C9`) into a warm, high-contrast palette with "halo" gradients.
-Semantic token names match the platform app so the two can later share one
-package. See `AGENTS.md` for how to use them.
+NUDE `#E7D7C9`) into a warm editorial palette: ivory ground, noir bands, nude
+accents and photography on rounded cards. Semantic token names match the
+platform app so the two can later share one package. See `AGENTS.md` for how
+to use them.
+
+Before the public launch:
+
+- **Search engines.** `src/app/layout.tsx` sets `robots: noindex` for the soft
+  launch. Remove it when the site should be found.
+- **Photography.** The images in `src/assets/home` are generated stand-ins.
+  Replace them with licensed or commissioned photography (same file names).
 
 Two things still need brand assets:
 

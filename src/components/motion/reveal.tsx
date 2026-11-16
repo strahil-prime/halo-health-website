@@ -2,9 +2,11 @@
 
 import { motion, type HTMLMotionProps } from 'motion/react';
 import type { ReactNode } from 'react';
+import type { Segment } from '@/content/home';
 import { cn } from '@/lib/utils';
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const inView = { once: true, margin: '0px 0px -10% 0px' } as const;
 
 interface RevealProps extends HTMLMotionProps<'div'> {
   children: ReactNode;
@@ -29,10 +31,7 @@ export function Reveal({
       initial={{ opacity: 0, y, filter: 'blur(6px)' }}
       {...(immediate
         ? { animate: target }
-        : {
-            whileInView: target,
-            viewport: { once: true, margin: '0px 0px -12% 0px' },
-          })}
+        : { whileInView: target, viewport: inView })}
       transition={{ duration: 0.9, delay, ease }}
       {...props}
     >
@@ -41,64 +40,84 @@ export function Reveal({
   );
 }
 
-interface SplitWordsProps {
-  text: string;
+interface RevealLinesProps {
+  /** One segment per line. */
+  lines: readonly Segment[];
   className?: string;
-  wordClassName?: string;
   delay?: number;
   stagger?: number;
   immediate?: boolean;
 }
 
 /**
- * Headline reveal: each word rises out of a clipped line.
- * Screen readers get the plain sentence.
+ * Headline reveal: each line rises out of a clipped row.
+ * Put it inside the heading element. Screen readers get the plain sentence.
  */
-export function SplitWords({
-  text,
+export function RevealLines({
+  lines,
   className,
-  wordClassName,
   delay = 0,
-  stagger = 0.06,
+  stagger = 0.11,
   immediate = false,
-}: SplitWordsProps) {
-  const words = text.split(' ');
+}: RevealLinesProps) {
   return (
-    <span className={className}>
-      <span className="sr-only">{text}</span>
+    <span className={cn('block', className)}>
+      <span className="sr-only">
+        {lines.map((line) => line.text).join(' ')}
+      </span>
       <motion.span
         aria-hidden="true"
+        className="block"
         initial="hidden"
         {...(immediate
           ? { animate: 'shown' }
-          : {
-              whileInView: 'shown',
-              viewport: { once: true, margin: '0px 0px -12% 0px' },
-            })}
+          : { whileInView: 'shown', viewport: inView })}
         transition={{ staggerChildren: stagger, delayChildren: delay }}
       >
-        {words.map((word, i) => (
+        {lines.map((line) => (
           <span
-            key={`${word}-${i}`}
-            className="-mb-[0.18em] inline-block overflow-hidden pb-[0.18em] align-bottom"
+            key={line.text}
+            className="-mx-[0.08em] -mb-[0.16em] block overflow-hidden px-[0.08em] pb-[0.16em]"
           >
             <motion.span
-              className={cn(
-                'inline-block will-change-transform',
-                wordClassName,
-              )}
+              className="block origin-bottom-left will-change-transform"
               variants={{
-                hidden: { y: '110%', rotate: 4, opacity: 0 },
-                shown: { y: '0%', rotate: 0, opacity: 1 },
+                hidden: { y: '112%', rotate: 2.5 },
+                shown: { y: '0%', rotate: 0 },
               }}
-              transition={{ duration: 1, ease }}
+              transition={{ duration: 1.15, ease }}
             >
-              {word}
-              {i < words.length - 1 ? ' ' : ''}
+              {line.em ? (
+                <em>{line.text}</em>
+              ) : line.soft ? (
+                <span className="text-stone">{line.text}</span>
+              ) : (
+                line.text
+              )}
             </motion.span>
           </span>
         ))}
       </motion.span>
     </span>
+  );
+}
+
+/** A hairline that draws itself from the left when it scrolls into view. */
+export function RevealRule({
+  className,
+  delay = 0,
+}: {
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <motion.span
+      aria-hidden="true"
+      className={cn('block h-px origin-left bg-foreground/20', className)}
+      initial={{ scaleX: 0 }}
+      whileInView={{ scaleX: 1 }}
+      viewport={inView}
+      transition={{ duration: 1.2, delay, ease }}
+    />
   );
 }

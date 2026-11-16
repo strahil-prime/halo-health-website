@@ -1,63 +1,75 @@
-import { ArrowUpRight } from 'lucide-react';
+import Image from 'next/image';
+import { photos } from '@/assets/home';
+import { PillLink } from '@/components/brand/pill-link';
 import { Magnetic } from '@/components/motion/magnetic';
-import { Reveal, SplitWords } from '@/components/motion/reveal';
-import { Button } from '@/components/ui/button';
-import { closing } from '@/content/home';
+import { Parallax } from '@/components/motion/parallax';
+import { Reveal, RevealLines } from '@/components/motion/reveal';
+import { closing, cta } from '@/content/home';
 import { contactLink, platformLink } from '@/lib/env';
 
+/** The last invitation, over the dawn photograph. */
 export function ClosingCta() {
   return (
-    <section
-      aria-labelledby="closing-heading"
-      className="bg-background px-3 pb-3 sm:px-5 sm:pb-5"
-    >
-      <div className="theme-ink relative isolate overflow-hidden rounded-[2.5rem] px-6 py-28 text-center sm:py-40">
+    <section aria-labelledby="closing-title" className="inset-x section-t">
+      <div className="theme-ink relative isolate flex min-h-[32rem] flex-col justify-end overflow-hidden rounded-3xl px-5 py-8 sm:px-8 lg:min-h-[31.25rem] lg:px-10 lg:py-14">
+        <Parallax amount={8} className="-z-20">
+          <Image
+            src={photos.closing}
+            alt={closing.imageAlt}
+            fill
+            placeholder="blur"
+            sizes="100vw"
+            className="object-cover object-[78%_38%] lg:object-[50%_38%]"
+          />
+        </Parallax>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-        >
-          <div className="absolute top-full left-1/2 w-[min(120vw,64rem)] -translate-x-1/2 -translate-y-[30%] sm:-translate-y-[36%]">
-            <div className="aspect-square animate-halo-breathe rounded-full bg-[radial-gradient(closest-side,rgb(217_138_91/0.4),rgb(236_196_151/0.12)_60%,transparent)]" />
-            <div className="absolute inset-[8%] halo-ring animate-halo-spin opacity-80 blur-xl [--halo-thickness:2rem]" />
-            <div className="absolute inset-[8%] halo-ring animate-halo-spin [--halo-thickness:1.5px]" />
-          </div>
-          <div className="grain absolute inset-0" />
-        </div>
+          className="absolute inset-0 -z-10 bg-linear-to-t from-noir/85 from-10% to-transparent to-80% lg:bg-linear-to-r lg:from-noir/75 lg:from-0% lg:via-noir/30 lg:via-48% lg:to-transparent lg:to-72%"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 -z-10 h-[55%] bg-linear-to-t from-noir/70 to-transparent max-lg:hidden"
+        />
+        <div aria-hidden="true" className="grain absolute inset-0 -z-10" />
 
-        <h2 id="closing-heading" className="mx-auto max-w-4xl text-display-xl">
-          <SplitWords text={closing.title[0]} className="block" />
-          <SplitWords
-            text={closing.title[1]}
-            delay={0.25}
-            className="block"
-            wordClassName="text-gradient-warm pr-[0.08em] italic"
-          />
-        </h2>
-        <Reveal delay={0.3}>
-          <p className="mx-auto mt-7 max-w-xl text-lead text-pretty text-muted-foreground">
-            {closing.body}
-          </p>
-        </Reveal>
-        <Reveal
-          delay={0.4}
-          className="mt-10 flex flex-wrap items-center justify-center gap-3"
-        >
-          <Magnetic>
-            <Button asChild size="lg" className="pr-5">
-              <a href={platformLink('/')}>
-                {closing.primaryCta}
-                <span className="grid size-8 place-items-center rounded-full bg-ink text-bone transition-transform duration-500 group-hover/button:rotate-45">
-                  <ArrowUpRight />
-                </span>
-              </a>
-            </Button>
-          </Magnetic>
-          <Button asChild size="lg" variant="outline">
-            <a href={contactLink('Halo Health enquiry')}>
-              {closing.secondaryCta}
-            </a>
-          </Button>
-        </Reveal>
+        <div className="flex max-w-[58rem] flex-col gap-6">
+          <Reveal y={16}>
+            <p className="flex items-center gap-3.5 text-eyebrow text-linen">
+              <span
+                aria-hidden="true"
+                className="h-px w-11 bg-current opacity-60"
+              />
+              {closing.eyebrow}
+            </p>
+          </Reveal>
+          <h2
+            id="closing-title"
+            className="font-display text-[clamp(2.5rem,1.2rem+5vw,4.75rem)] leading-none tracking-[-0.02em] text-balance"
+          >
+            <RevealLines lines={closing.title} />
+          </h2>
+          <Reveal delay={0.25}>
+            <p className="max-w-[28.75rem] text-lead text-linen">
+              {closing.body}
+            </p>
+          </Reveal>
+          <Reveal
+            delay={0.35}
+            className="flex flex-wrap items-center gap-3 max-sm:flex-col max-sm:items-stretch"
+          >
+            <Magnetic strength={0.18} className="max-sm:block!">
+              <PillLink href={platformLink('/')} className="max-sm:w-full">
+                {cta.primary}
+              </PillLink>
+            </Magnetic>
+            <PillLink
+              href={contactLink('Talk to the Halo Health team')}
+              variant="outline"
+            >
+              {cta.team}
+            </PillLink>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
