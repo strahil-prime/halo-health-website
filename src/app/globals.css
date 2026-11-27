@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'lenis/dist/lenis.css';
+@import '../styles/cadieux.css';
 @import '../styles/tokens.css';
 
 /* Map design tokens (src/styles/tokens.css) into Tailwind's theme. */
@@ -83,6 +85,10 @@
     html {
       scroll-behavior: auto;
     }
+  }
+  /* Lenis does the smoothing when it is on; native smooth scroll would fight it. */
+  html.lenis {
+    scroll-behavior: auto;
   }
   body {
     @apply bg-background font-sans text-foreground antialiased;
@@ -183,8 +189,8 @@
 /* ---------- Brand art ---------- */
 /* Frosted dark glass for chips and cards that sit on photography. */
 @utility glass-ink {
-  background-color: rgb(10 9 8 / 0.5);
-  border: 1px solid rgb(241 231 219 / 0.18);
+  background-color: rgb(11 13 15 / 0.5);
+  border: 1px solid rgb(238 240 241 / 0.18);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }

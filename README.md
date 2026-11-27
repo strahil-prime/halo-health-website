@@ -11,10 +11,12 @@ owns sign-up, the HSA questionnaire and all health data.
 
 | Concern    | Library                                                                 |
 | ---------- | ----------------------------------------------------------------------- |
-| Framework  | [Next.js 15](https://nextjs.org) (App Router) + TypeScript              |
+| Framework  | [Next.js 16](https://nextjs.org) (App Router) + TypeScript              |
 | Styling    | [Tailwind CSS v4](https://tailwindcss.com) (CSS-first config)           |
 | Components | [shadcn/ui](https://ui.shadcn.com) + [Magic UI](https://magicui.design) |
 | Animation  | [Motion](https://motion.dev) (Framer Motion), [GSAP](https://gsap.com)  |
+| Scroll     | [Lenis](https://lenis.darkroom.engineering) smooth scroll               |
+| 3D         | [Three.js](https://threejs.org) + React Three Fiber, lazy-loaded        |
 | Numbers    | [NumberFlow](https://number-flow.barvian.me)                            |
 | UI state   | [XState v5](https://stately.ai/docs/xstate)                             |
 | Tooling    | pnpm 10, Node 24, ESLint 9, Prettier 3                                  |
@@ -34,7 +36,7 @@ pnpm dev                 # http://localhost:3000
 
 | Script              | What it does                                |
 | ------------------- | ------------------------------------------- |
-| `pnpm dev`          | Dev server with Turbopack                   |
+| `pnpm dev`          | Dev server (Turbopack)                      |
 | `pnpm build`        | Production build                            |
 | `pnpm start`        | Serve the production build                  |
 | `pnpm lint`         | ESLint, zero warnings allowed               |
@@ -67,7 +69,9 @@ src/
     brand/             logo, pill buttons, headline parts
     site/              notice bar, header, footer
     home/              homepage sections
-    motion/            shared animation primitives (Reveal, RevealLines…)
+    motion/            shared animation primitives (Reveal, SmoothScroll…)
+    three/             lazy WebGL scenes with still fallbacks
+    lab/               motion lab demos (/lab)
     ui/                shadcn/ui components (owned code, edit freely)
     magicui/           Magic UI components (owned code, edit freely)
   assets/home/         homepage photography (static imports)
@@ -75,7 +79,9 @@ src/
   machines/            XState machines
   lib/                 utils (cn), env + platformLink() + contactLink()
   fonts/               self-hosted fonts (OFL)
-  styles/tokens.css    design tokens
+  styles/cadieux.css   CADIEUX tokens (copied from the design system)
+  styles/tokens.css    marketing tokens on top of them
+  hooks/               useMotionBudget (full, lite or reduced motion)
 ```
 
 ## Adding components
@@ -90,12 +96,21 @@ new components use the semantic tokens (`bg-primary`, not hex values).
 
 ## Design system
 
-Tokens live in `src/styles/tokens.css` and are mapped into Tailwind in
-`src/app/globals.css`. They grew out of the brand style guide (black, white,
-NUDE `#E7D7C9`) into a warm editorial palette: ivory ground, noir bands, nude
-accents and photography on rounded cards. Semantic token names match the
-platform app so the two can later share one package. See `AGENTS.md` for how
-to use them.
+The CADIEUX tokens (`src/styles/cadieux.css`) are copied from the design
+system in `wanio/halo-health` (`packages/tokens`, docs at
+https://cadieux-design-system.vercel.app). `src/styles/tokens.css` maps them
+to the marketing look, "Cadieux Branding Type 1" Cool revision, and
+`src/app/globals.css` maps that into Tailwind. When the tokens change, copy
+the new generated `cadieux.css` over this one; once `@halo/tokens` is
+published, import it from the package instead. See `AGENTS.md` for how to use
+them.
+
+## Motion
+
+Open `/lab` (not linked from the site) for one small demo of each motion
+layer: Motion hovers and entrances, a pinned GSAP scroll story, Lenis smooth
+scroll and a lazy Three.js helix. Turn on "Reduce motion" in your system
+settings to check the fallbacks.
 
 Before the public launch:
 

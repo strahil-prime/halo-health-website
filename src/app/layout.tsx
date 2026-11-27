@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
+import { MotionProvider } from '@/components/motion/motion-provider';
+import { SmoothScroll } from '@/components/motion/smooth-scroll';
 import { env } from '@/lib/env';
 import './globals.css';
 
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0a0908',
+  themeColor: '#0b0d0f',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -66,7 +68,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to content
         </a>
-        {children}
+        <MotionProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+        </MotionProvider>
       </body>
     </html>
   );
