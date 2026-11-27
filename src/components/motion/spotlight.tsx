@@ -31,7 +31,7 @@ export function Spotlight({
       className={cn(
         'group/spot relative isolate overflow-hidden',
         'before:pointer-events-none before:absolute before:inset-0 before:z-10 before:opacity-0 before:transition-opacity before:duration-700 hover:before:opacity-100',
-        'before:bg-[radial-gradient(26rem_circle_at_var(--spot-x,50%)_var(--spot-y,50%),rgb(241_231_219/0.14),transparent_70%)]',
+        'before:bg-[radial-gradient(26rem_circle_at_var(--spot-x,50%)_var(--spot-y,50%),rgb(238_240_241/0.14),transparent_70%)]',
         className,
       )}
       {...props}

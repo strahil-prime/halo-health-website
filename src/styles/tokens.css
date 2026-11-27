@@ -1,38 +1,41 @@
 /*
- * Halo Health design tokens.
+ * Marketing site design tokens, on top of the CADIEUX tokens.
  *
- * From the brand style guide (logo black/white, NUDE #E7D7C9, The Seasons +
- * Inter) and the approved homepage design: a near-monochrome system where
- * the warmth comes from photography.
+ * `cadieux.css` (copied from the design system, do not edit) holds the shared
+ * primitives: neutral greys, slate, radii, spacing. This file maps them to the
+ * marketing look: "Cadieux Branding Type 1", Cool revision (Figma
+ * R3ePEU2Lu231DCFewXHvMr, desktop 73:566, mobile 76:803, variable mode Cool).
+ * Bold and editorial: cool light ground, near-black bands, serif display type.
  *
  * Three layers:
- *  1. Palette    raw brand colours. Never use these names in components
- *                unless you are drawing brand art (photo scrims, glass).
+ *  1. Palette    the Figma Cool variables, aliased to CADIEUX primitives.
+ *                The `--hh-*` names are kept so existing sections work as is.
+ *                Never use these in components unless you are drawing brand
+ *                art (photo scrims, glass).
  *  2. Semantic   what components use (bg-background, text-muted-foreground…).
- *                Names match the platform app so tokens can be shared later.
  *  3. Themes     `.theme-ink` and `.theme-nude` flip the semantic layer for
  *                a section or a card.
  *
- * Contrast (WCAG): ink on ivory 17:1, taupe on ivory 6.6:1, cream on noir
- * 16:1, mist on noir 8.7:1, taupe-deep on nude 6.9:1.
+ * Contrast (WCAG): ink on page 17:1, taupe on page 6.3:1, cream on noir
+ * 17:1, mist on noir 8.4:1, taupe-deep on nude 7.6:1.
  */
 :root {
-  /* 1. Palette */
-  --hh-noir: #0a0908;
-  --hh-ink: #0e0c0a;
-  --hh-ink-2: #15110e;
-  --hh-ink-3: #241d18;
-  --hh-ivory: #f6f0e9;
-  --hh-sand: #ede2d5;
-  --hh-nude: #e7d7c9; /* style guide NUDE */
-  --hh-cream: #f1e7db;
-  --hh-linen: #e4d8ca;
-  --hh-mist: #b9ab9d;
-  --hh-stone: #85786c;
-  --hh-taupe: #5e544b;
-  --hh-taupe-deep: #4a4038;
-  --hh-umber: #3b332c;
-  --hh-bronze: #9a7650;
+  /* 1. Palette (Figma variable in brackets) */
+  --hh-noir: var(--cx-neutral-975); /* bg/noir */
+  --hh-ink: var(--cx-neutral-950); /* brand/ink */
+  --hh-ink-2: var(--cx-neutral-900); /* bg/photo */
+  --hh-ink-3: var(--cx-neutral-875);
+  --hh-ivory: var(--cx-neutral-100); /* bg/page */
+  --hh-sand: var(--cx-neutral-150); /* bg/sand */
+  --hh-nude: var(--cx-neutral-200); /* bg/nude */
+  --hh-cream: var(--cx-neutral-100); /* brand/cream */
+  --hh-linen: var(--cx-neutral-200); /* text/on-dark */
+  --hh-mist: var(--cx-neutral-450); /* text/on-dark-subtle */
+  --hh-stone: var(--cx-neutral-550); /* text/soft */
+  --hh-taupe: var(--cx-neutral-700); /* text/muted */
+  --hh-taupe-deep: var(--cx-neutral-750); /* text/muted-strong */
+  --hh-umber: var(--cx-neutral-800); /* text/body */
+  --hh-bronze: var(--cx-slate-500); /* brand/bronze (a cool slate now) */
 
   /* 2. Semantic (light theme) */
   --background: var(--hh-ivory);
@@ -49,10 +52,10 @@
   --accent-foreground: var(--hh-ink);
   --muted: var(--hh-sand);
   --muted-foreground: var(--hh-taupe);
-  --border: rgb(14 12 10 / 0.14);
-  --input: rgb(14 12 10 / 0.14);
+  --border: rgb(14 17 20 / 0.14);
+  --input: rgb(14 17 20 / 0.14);
   --ring: var(--hh-ink);
-  --destructive: #b42318;
+  --destructive: var(--cx-red-700);
   --destructive-foreground: #ffffff;
 
   /* Shape */
@@ -87,8 +90,8 @@
   --accent-foreground: var(--hh-ink);
   --muted: var(--hh-ink-2);
   --muted-foreground: var(--hh-mist);
-  --border: rgb(241 231 219 / 0.18);
-  --input: rgb(241 231 219 / 0.18);
+  --border: rgb(238 240 241 / 0.18);
+  --input: rgb(238 240 241 / 0.18);
   --ring: var(--hh-cream);
   color: var(--foreground);
   background-color: var(--background);
@@ -102,8 +105,8 @@
   --card-foreground: var(--hh-ink);
   --muted: var(--hh-sand);
   --muted-foreground: var(--hh-taupe-deep);
-  --border: rgb(14 12 10 / 0.3);
-  --input: rgb(14 12 10 / 0.3);
+  --border: rgb(14 17 20 / 0.3);
+  --input: rgb(14 17 20 / 0.3);
   color: var(--foreground);
   background-color: var(--background);
 }

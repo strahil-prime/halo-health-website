@@ -22,9 +22,10 @@ Hard rules:
 
 ## Stack and versions
 
-Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS v4,
-shadcn/ui (new-york), Magic UI, Motion (`motion` package, formerly Framer
-Motion), GSAP + `@gsap/react`, NumberFlow (`@number-flow/react`), XState v5 +
+Next.js 16 (App Router, Turbopack), React 19, TypeScript (strict), Tailwind
+CSS v4, shadcn/ui (new-york), Magic UI, Motion (`motion` package, formerly
+Framer Motion), GSAP + ScrollTrigger + `@gsap/react`, Lenis (smooth scroll),
+Three.js + React Three Fiber, NumberFlow (`@number-flow/react`), XState v5 +
 `@xstate/react`. pnpm 10 (pinned in `packageManager`), Node 24 (`.nvmrc`).
 
 ## Commands
@@ -52,11 +53,16 @@ pnpm format       # fix formatting
 
 **Design system**
 
-- Tokens live in `src/styles/tokens.css` in three layers: palette (`--hh-*`),
-  semantic (`--background`, `--primary`…) and themes. Tailwind maps them in
-  `src/app/globals.css`.
-- The look: ivory ground, noir bands, nude accents, photography on rounded
-  (`rounded-3xl`) cards, serif display type with italic emphasis.
+- `src/styles/cadieux.css` is the shared CADIEUX token file, copied from the
+  design system (`wanio/halo-health` `packages/tokens`). Never edit it by
+  hand: replace it with a newly generated copy.
+- `src/styles/tokens.css` maps those primitives to the marketing look in three
+  layers: palette (`--hh-*`, aliases of `--cx-*`), semantic (`--background`,
+  `--primary`…) and themes. Tailwind maps them in `src/app/globals.css`.
+- The look is "Cadieux Branding Type 1", Cool revision (Figma
+  `R3ePEU2Lu231DCFewXHvMr`, desktop 73:566, mobile 76:803): cool light grey
+  ground, near-black bands, photography on rounded (`rounded-3xl`) cards,
+  serif display type with italic emphasis. Neutral only: no gold or beige.
 - Components use semantic classes (`bg-background`, `text-muted-foreground`,
   `text-accent`, `border-border`). Palette classes (`bg-noir`, `text-linen`,
   `bg-cream`…) are for brand art only: photo scrims, glass chips, text that
@@ -101,12 +107,27 @@ pnpm format       # fix formatting
   fills in as you scroll), `Parallax` (drifting photo layer), `Magnetic`
   (button pull), `Spotlight` (pointer-following light on cards). Use these
   before writing new animation code.
+- `/lab` is the motion lab: one small demo per layer. Check new motion there
+  with "Reduce motion" on and off.
 - Pick one tool per element:
   - **Motion** for component-level enter/exit, hover, layout and gesture
     animation. Import from `motion/react`.
-  - **GSAP** for scroll-driven and timeline sequences. Always use the
-    `useGSAP` hook with a `scope` ref (it cleans up for you). Register
-    plugins once at module level.
+  - **GSAP** for scroll-driven and timeline sequences. Import `gsap`,
+    `ScrollTrigger` and `useGSAP` from `@/lib/gsap` (plugins are registered
+    there once). Always use `useGSAP` with a `scope` ref (it cleans up for
+    you), and wrap motion in `gsap.matchMedia()` with `motionOK`.
+  - **Lenis** smooth-scrolls the whole site (`SmoothScroll` in the root
+    layout), driven by GSAP's ticker so ScrollTrigger stays in sync. It is off
+    with reduced motion. Pause it behind overlays with `useLenis()` from
+    `lenis/react` (`lenis.stop()` / `lenis.start()`), as the header menu does.
+  - **Three.js** through React Three Fiber, only inside `LazyScene`
+    (`src/components/three/`). Load the scene with
+    `next/dynamic(..., { ssr: false })` so Three.js stays in its own chunk,
+    and always give a still fallback (SVG or image). `useMotionBudget()`
+    decides: `full` gets 3D, `lite` (low-power, Data Saver, no WebGL) and
+    `reduce` keep the still. See `helix.tsx`.
+  - **Page transitions**: `src/app/template.tsx` fades each new page in with
+    Motion; the first page a visitor lands on is not animated.
   - **CSS / Tailwind** (`tw-animate-css`) for simple transitions.
 - Respect reduced motion: `motion-safe:` / `motion-reduce:` in Tailwind,
   `gsap.matchMedia()` with `(prefers-reduced-motion: no-preference)`, and

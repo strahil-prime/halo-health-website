@@ -75,7 +75,7 @@ export function PillLink({
   return (
     <a
       className={cn(
-        'group/arrow inline-flex items-center justify-between rounded-full bg-primary font-medium text-primary-foreground transition-[scale,box-shadow] duration-500 ease-brand hover:shadow-[0_18px_40px_-18px_rgb(10_9_8/0.55)] active:scale-[0.98]',
+        'group/arrow inline-flex items-center justify-between rounded-full bg-primary font-medium text-primary-foreground transition-[scale,box-shadow] duration-500 ease-brand hover:shadow-[0_18px_40px_-18px_rgb(11_13_15/0.55)] active:scale-[0.98]',
         size === 'lg'
           ? 'min-h-[3.375rem] gap-3.5 pr-[0.4375rem] pl-[1.625rem] text-[0.9375rem]'
           : 'min-h-[3.125rem] gap-3.5 pr-1.5 pl-[1.375rem] text-sm',

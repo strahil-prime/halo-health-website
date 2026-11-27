@@ -1,6 +1,7 @@
 'use client';
 
 import { useMachine } from '@xstate/react';
+import { useLenis } from 'lenis/react';
 import {
   AnimatePresence,
   motion,
@@ -58,6 +59,7 @@ export function Header() {
   const [snapshot, send] = useMachine(menuMachine);
   const open = snapshot.matches('open');
   const active = useActiveSection(sectionIds);
+  const lenis = useLenis();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
@@ -74,6 +76,7 @@ export function Header() {
     const background = document.querySelectorAll<HTMLElement>('[data-page]');
     background.forEach((el) => el.setAttribute('inert', ''));
     document.body.style.overflow = 'hidden';
+    lenis?.stop();
     firstLinkRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -85,9 +88,10 @@ export function Header() {
     return () => {
       background.forEach((el) => el.removeAttribute('inert'));
       document.body.style.overflow = '';
+      lenis?.start();
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [open, send]);
+  }, [open, send, lenis]);
 
   // Close the menu if the viewport grows into the desktop layout.
   useEffect(() => {
@@ -112,7 +116,7 @@ export function Header() {
             className={cn(
               'mx-auto flex items-center justify-between gap-4 rounded-full border transition-[max-width,margin,padding,background-color,border-color,box-shadow] duration-700 ease-brand',
               solid
-                ? 'mt-2.5 max-w-[78rem] border-cream/15 bg-noir/80 py-1.5 pr-1.5 pl-4 shadow-[0_18px_50px_-22px_rgb(10_9_8/0.7)] backdrop-blur-xl sm:pl-6'
+                ? 'mt-2.5 max-w-[78rem] border-cream/15 bg-noir/80 py-1.5 pr-1.5 pl-4 shadow-[0_18px_50px_-22px_rgb(11_13_15/0.7)] backdrop-blur-xl sm:pl-6'
                 : 'mt-3.5 max-w-full border-transparent px-3.5 py-0 sm:mt-[1.375rem] lg:px-7',
             )}
           >

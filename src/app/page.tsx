@@ -10,14 +10,13 @@ import { Places } from '@/components/home/places';
 import { Programmes } from '@/components/home/programmes';
 import { Promises } from '@/components/home/promises';
 import { Questions } from '@/components/home/questions';
-import { MotionProvider } from '@/components/motion/motion-provider';
 import { Footer } from '@/components/site/footer';
 import { Header } from '@/components/site/header';
 import { NoticeBar } from '@/components/site/notice-bar';
 
 export default function HomePage() {
   return (
-    <MotionProvider>
+    <>
       {/* `data-page` marks what goes inert behind the mobile menu. */}
       <div data-page>
         <NoticeBar />
@@ -40,6 +39,6 @@ export default function HomePage() {
       <div data-page>
         <Footer />
       </div>
-    </MotionProvider>
+    </>
   );
 }

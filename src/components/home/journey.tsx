@@ -1,17 +1,13 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 import { Eyebrow } from '@/components/brand/headline';
 import { PillLink } from '@/components/brand/pill-link';
 import { Reveal, RevealLines } from '@/components/motion/reveal';
 import { cta, journey } from '@/content/home';
 import { platformLink } from '@/lib/env';
+import { gsap, useGSAP } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
  * Where each step sits on the arc, in the SVG's 1360 x 340 space.
